@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0"
+            prefWidth="600.0" styleClass="root, border-pane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.educationsystem.educationsystem.controller.MeetingEditController">
+    <stylesheets>
+        <URL value="@../../../style.css"/>
+    </stylesheets>
+   <top>
+      <BorderPane prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <left>
+            <Button fx:id="cancelButton" styleClass="button, back-button" mnemonicParsing="false" onAction="#handleCancel" text="← Отмена"
+                    BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="20.0" />
+               </BorderPane.margin>
+            </Button>
+         </left>
+         <center>
+            <Label fx:id="titleLabel" styleClass="title-label" text="Новая встреча" BorderPane.alignment="CENTER">
+            </Label>
+         </center>
+      </BorderPane>
+   </top>
+   <center>
+       <VBox styleClass="vbox-container" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
+           <VBox alignment="CENTER_LEFT" prefWidth="500.0" spacing="5.0">
+               <Label styleClass="field-label" text="Дата и время"/>
+               <HBox styleClass="hbox-container" prefWidth="500.0" spacing="10.0">
+                   <DatePicker fx:id="datePicker" styleClass="combo-box" prefWidth="300.0"/>
+                   <ComboBox fx:id="hourComboBox" styleClass="combo-box" prefWidth="80.0" promptText="Час"/>
+                   <ComboBox fx:id="minuteComboBox" styleClass="combo-box" prefWidth="80.0" promptText="Мин"/>
+               </HBox>
+           </VBox>
+           <VBox alignment="CENTER_LEFT" prefWidth="500.0" spacing="5.0">
+               <Label styleClass="field-label" text="Тема встречи"/>
+               <TextField fx:id="topicField" styleClass="text-field" prefWidth="500.0"/>
+           </VBox>
+           <VBox alignment="CENTER_LEFT" prefWidth="500.0" spacing="5.0">
+               <Label styleClass="field-label" text="Выполненные задачи"/>
+               <TextArea fx:id="tasksArea" styleClass="text-area" prefHeight="100.0" prefWidth="500.0" wrapText="true"/>
+           </VBox>
+           <VBox fx:id="mentorRatingContainer" alignment="CENTER_LEFT" prefWidth="500.0" spacing="5.0" visible="false">
+               <Label styleClass="field-label" text="Ваша оценка (наставник)"/>
+               <HBox fx:id="mentorRatingStars" styleClass="hbox-container" prefWidth="500.0" spacing="10.0"/>
+           </VBox>
+           <VBox fx:id="menteeRatingContainer" alignment="CENTER_LEFT" prefWidth="500.0" spacing="5.0" visible="false">
+               <Label styleClass="field-label" text="Ваша оценка (подопечный)"/>
+               <HBox fx:id="menteeRatingStars" styleClass="hbox-container" prefWidth="500.0" spacing="10.0"/>
+           </VBox>
+       </VBox>
+   </center>
+   <bottom>
+       <VBox styleClass="vbox-container" alignment="CENTER" prefHeight="80.0" prefWidth="600.0" spacing="10.0" BorderPane.alignment="CENTER">
+           <HBox styleClass="hbox-container" alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="20.0">
+               <Button fx:id="saveButton" styleClass="button, primary-button" mnemonicParsing="false" onAction="#handleSave" prefHeight="40.0"
+                       prefWidth="120.0" text="Сохранить">
+               </Button>
+               <Button fx:id="deleteButton" styleClass="button, danger-button" mnemonicParsing="false" onAction="#handleDelete" prefHeight="40.0"
+                       prefWidth="120.0" text="Удалить"
+                       visible="false">
+               </Button>
+           </HBox>
+       </VBox>
+   </bottom>
+   <bottom>
+      <Label styleClass="footer" text="Платформа наставничества" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" />
+         </BorderPane.margin>
+      </Label>
+   </bottom>
+</BorderPane>

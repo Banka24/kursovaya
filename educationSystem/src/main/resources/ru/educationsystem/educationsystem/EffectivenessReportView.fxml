@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.URL?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0"
+            prefWidth="900.0" styleClass="root, border-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.educationsystem.educationsystem.controller.EffectivenessReportController">
+    <stylesheets>
+        <URL value="@../../../style.css"/>
+    </stylesheets>
+   <top>
+       <VBox BorderPane.alignment="CENTER">
+           <BorderPane prefHeight="60.0" prefWidth="900.0">
+              <left>
+                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" text="← Назад"
+                          BorderPane.alignment="CENTER">
+                      <BorderPane.margin>
+                          <Insets left="20.0" />
+                      </BorderPane.margin>
+                  </Button>
+              </left>
+              <center>
+                  <Label text="Отчёт: Эффективность наставничества" BorderPane.alignment="CENTER">
+                      <font>
+                          <Font name="System Bold" size="24.0" />
+                      </font>
+                  </Label>
+              </center>
+              <right>
+                  <Button fx:id="exportButton" mnemonicParsing="false" onAction="#handleExport"
+                      text="Скачать отчёт (PDF)" BorderPane.alignment="CENTER">
+                      <BorderPane.margin>
+                          <Insets right="20.0" />
+                      </BorderPane.margin>
+                  </Button>
+              </right>
+           </BorderPane>
+           <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="900.0" spacing="20.0">
+               <padding>
+                   <Insets left="20.0" />
+               </padding>
+               <VBox spacing="5.0">
+                   <Label text="Период:" />
+                   <HBox spacing="10.0">
+                       <DatePicker fx:id="startDatePicker" prefWidth="150.0" promptText="С" />
+                       <DatePicker fx:id="endDatePicker" prefWidth="150.0" promptText="По" />
+                   </HBox>
+               </VBox>
+               <VBox spacing="5.0">
+                   <Label text="Направление:" />
+                   <ComboBox fx:id="directionComboBox" prefWidth="150.0" promptText="Выберите направление" />
+               </VBox>
+               <Button mnemonicParsing="false" onAction="#handleApplyFilter" text="Применить" />
+           </HBox>
+       </VBox>
+   </top>
+   <center>
+       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
+           <padding>
+               <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
+           </padding>
+           <HBox alignment="CENTER" prefHeight="200.0" prefWidth="800.0" spacing="20.0">
+               <VBox alignment="CENTER" prefHeight="180.0" prefWidth="350.0" styleClass="info-card">
+                   <Label text="Средние рейтинги">
+                       <font>
+                           <Font name="System Bold" size="18.0" />
+                       </font>
+                       <VBox.margin>
+                           <Insets bottom="10.0" />
+                       </VBox.margin>
+                   </Label>
+                   <HBox alignment="CENTER_LEFT" prefWidth="300.0" spacing="10.0">
+                       <VBox.margin>
+                           <Insets bottom="5.0" />
+                       </VBox.margin>
+                       <Label text="Наставники:" />
+                       <Label fx:id="mentorRatingLabel" text="[рейтинг]" />
+                   </HBox>
+                   <HBox alignment="CENTER_LEFT" prefWidth="300.0" spacing="10.0">
+                       <Label text="Подопечные:" />
+                       <Label fx:id="menteeRatingLabel" text="[рейтинг]" />
+                   </HBox>
+               </VBox>
+
+               <VBox alignment="CENTER" prefHeight="180.0" prefWidth="350.0" styleClass="info-card">
+                   <Label text="Планы развития">
+                       <font>
+                           <Font name="System Bold" size="18.0" />
+                       </font>
+                       <VBox.margin>
+                           <Insets bottom="10.0" />
+                       </VBox.margin>
+                   </Label>
+                   <HBox alignment="CENTER_LEFT" prefWidth="300.0" spacing="10.0">
+                       <VBox.margin>
+                           <Insets bottom="5.0" />
+                       </VBox.margin>
+                       <Label text="Всего планов:" />
+                       <Label fx:id="totalPlansLabel" text="[количество]" />
+                   </HBox>
+                   <HBox alignment="CENTER_LEFT" prefWidth="300.0" spacing="10.0">
+                       <Label text="Завершено в срок:" />
+                       <Label fx:id="completedOnTimeLabel" text="[количество] ([проценты])" />
+                   </HBox>
+               </VBox>
+           </HBox>
+
+           <VBox alignment="CENTER" prefHeight="300.0" prefWidth="800.0" styleClass="info-card">
+               <Label text="Распределение по направлениям">
+                   <font>
+                       <Font name="System Bold" size="18.0" />
+                   </font>
+                   <VBox.margin>
+                       <Insets bottom="20.0" />
+                   </VBox.margin>
+               </Label>
+               <GridPane fx:id="chartContainer" prefHeight="220.0" prefWidth="770.0">
+               </GridPane>
+           </VBox>
+       </VBox>
+   </center>
+   <bottom>
+      <Label text="Платформа наставничества" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="12.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets bottom="10.0" />
+         </BorderPane.margin>
+      </Label>
+   </bottom>
+</BorderPane>
