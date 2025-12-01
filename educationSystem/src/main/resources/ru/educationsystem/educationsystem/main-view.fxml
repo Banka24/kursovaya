@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.educationsystem.educationsystem.controller.MainController">
+    <children>
+        <Label text="Система наставничества" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+        <MenuBar>
+            <menus>
+                <Menu text="Участники">
+                    <items>
+                        <MenuItem onAction="#openMentorsView" text="Наставники" />
+                        <MenuItem onAction="#openMenteesView" text="Подопечные" />
+                    </items>
+                </Menu>
+                <Menu text="Направления">
+                    <items>
+                        <MenuItem onAction="#openDirectionsView" text="Справочник направлений" />
+                    </items>
+                </Menu>
+                <Menu text="Пары">
+                    <items>
+                        <MenuItem onAction="#openPairsView" text="Управление парами" />
+                    </items>
+                </Menu>
+                <Menu text="Планы развития">
+                    <items>
+                        <MenuItem onAction="#openDevelopmentPlansView" text="Планы развития" />
+                    </items>
+                </Menu>
+                <Menu text="Встречи">
+                    <items>
+                        <MenuItem onAction="#openMeetingsView" text="Журнал встреч" />
+                    </items>
+                </Menu>
+                <Menu text="Отчеты">
+                    <items>
+                        <MenuItem onAction="#openReportsView" text="Генерация отчетов" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+
+        <HBox spacing="10.0" alignment="CENTER">
+            <children>
+                <Button text="Наставники" onAction="#openMentorsView" prefWidth="120.0" />
+                <Button text="Подопечные" onAction="#openMenteesView" prefWidth="120.0" />
+                <Button text="Пары" onAction="#openPairsView" prefWidth="120.0" />
+            </children>
+        </HBox>
+
+        <HBox spacing="10.0" alignment="CENTER">
+            <children>
+                <Button text="Направления" onAction="#openDirectionsView" prefWidth="120.0" />
+                <Button text="Планы развития" onAction="#openDevelopmentPlansView" prefWidth="120.0" />
+                <Button text="Встречи" onAction="#openMeetingsView" prefWidth="120.0" />
+            </children>
+        </HBox>
+
+        <Button text="Отчеты" onAction="#openReportsView" prefWidth="120.0" />
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</VBox>

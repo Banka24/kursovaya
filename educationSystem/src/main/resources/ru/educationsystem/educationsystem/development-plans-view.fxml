@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.educationsystem.educationsystem.controller.DevelopmentPlansController">
+    <children>
+        <Label text="Планы развития" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+        <HBox spacing="10.0">
+            <children>
+                <ComboBox fx:id="pairComboBox" promptText="Выберите пару" prefWidth="200.0" />
+                <Button text="Создать план" onAction="#createPlan" />
+            </children>
+        </HBox>
+
+        <TableView fx:id="plansTable" prefHeight="250.0" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="pairColumn" text="Пара" prefWidth="200.0" />
+                <TableColumn fx:id="goalColumn" text="Цель" prefWidth="250.0" />
+                <TableColumn fx:id="startDateColumn" text="Дата начала" prefWidth="150.0" />
+                <TableColumn fx:id="endDateColumn" text="Дата окончания" prefWidth="150.0" />
+                <TableColumn fx:id="statusColumn" text="Статус" prefWidth="100.0" />
+                <TableColumn fx:id="actionsColumn" text="Действия" prefWidth="100.0" />
+            </columns>
+        </TableView>
+
+        <Label text="Этапы плана:" style="-fx-font-weight: bold;" />
+
+        <TableView fx:id="stagesTable" prefHeight="150.0">
+            <columns>
+                <TableColumn fx:id="stageNameColumn" text="Название этапа" prefWidth="200.0" />
+                <TableColumn fx:id="stageDescriptionColumn" text="Описание" prefWidth="300.0" />
+                <TableColumn fx:id="stageDeadlineColumn" text="Срок" prefWidth="150.0" />
+                <TableColumn fx:id="stageCompletedColumn" text="Выполнено" prefWidth="100.0" />
+            </columns>
+        </TableView>
+
+        <HBox spacing="10.0" alignment="CENTER_RIGHT">
+            <children>
+                <Button text="Добавить этап" onAction="#addStage" />
+                <Button text="Закрыть" onAction="#closeWindow" />
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</VBox>

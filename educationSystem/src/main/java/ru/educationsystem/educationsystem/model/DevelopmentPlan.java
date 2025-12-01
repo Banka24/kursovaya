@@ -2,6 +2,7 @@ package ru.educationsystem.educationsystem.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "development_plans")
@@ -10,21 +11,26 @@ public class DevelopmentPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pair_id", nullable = false)
     private Pair pair;
 
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "deadline")
     private LocalDate deadline;
 
-    @Column(name = "completed", nullable = false)
-    private Boolean completed = false;
+    public DevelopmentPlan() {
+    }
+
+    public DevelopmentPlan(Pair pair, String title) {
+        this.pair = pair;
+        this.title = title;
+    }
 
     public Integer getId() {
         return id;
@@ -66,11 +72,31 @@ public class DevelopmentPlan {
         this.deadline = deadline;
     }
 
-    public Boolean getCompleted() {
-        return completed;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DevelopmentPlan that = (DevelopmentPlan) o;
+        return Objects.equals(id, that.id) && 
+               Objects.equals(pair, that.pair) && 
+               Objects.equals(title, that.title) && 
+               Objects.equals(description, that.description) && 
+               Objects.equals(deadline, that.deadline);
     }
 
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pair, title, description, deadline);
+    }
+
+    @Override
+    public String toString() {
+        return "DevelopmentPlan{" +
+                "id=" + id +
+                ", pair=" + pair +
+                ", title='" + title +
+                ", description='" + description +
+                ", deadline=" + deadline +
+                '}';
     }
 }

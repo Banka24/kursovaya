@@ -2,6 +2,7 @@ package ru.educationsystem.educationsystem.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "meetings")
@@ -10,24 +11,32 @@ public class Meeting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pair_id", nullable = false)
     private Pair pair;
 
     @Column(name = "datetime", nullable = false)
     private LocalDateTime datetime;
 
-    @Column(name = "topic", nullable = false)
+    @Column(name = "topic")
     private String topic;
 
-    @Column(name = "tasks_done")
+    @Column(name = "tasks_done", columnDefinition = "TEXT")
     private String tasksDone;
 
     @Column(name = "mentor_rating")
-    private Integer mentorRating;
+    private Short mentorRating;
 
     @Column(name = "mentee_rating")
-    private Integer menteeRating;
+    private Short menteeRating;
+
+    public Meeting() {
+    }
+
+    public Meeting(Pair pair, LocalDateTime datetime) {
+        this.pair = pair;
+        this.datetime = datetime;
+    }
 
     public Integer getId() {
         return id;
@@ -69,19 +78,51 @@ public class Meeting {
         this.tasksDone = tasksDone;
     }
 
-    public Integer getMentorRating() {
+    public Short getMentorRating() {
         return mentorRating;
     }
 
-    public void setMentorRating(Integer mentorRating) {
+    public void setMentorRating(Short mentorRating) {
         this.mentorRating = mentorRating;
     }
 
-    public Integer getMenteeRating() {
+    public Short getMenteeRating() {
         return menteeRating;
     }
 
-    public void setMenteeRating(Integer menteeRating) {
+    public void setMenteeRating(Short menteeRating) {
         this.menteeRating = menteeRating;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Meeting meeting = (Meeting) o;
+        return Objects.equals(id, meeting.id) && 
+               Objects.equals(pair, meeting.pair) && 
+               Objects.equals(datetime, meeting.datetime) && 
+               Objects.equals(topic, meeting.topic) && 
+               Objects.equals(tasksDone, meeting.tasksDone) && 
+               Objects.equals(mentorRating, meeting.mentorRating) && 
+               Objects.equals(menteeRating, meeting.menteeRating);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pair, datetime, topic, tasksDone, mentorRating, menteeRating);
+    }
+
+    @Override
+    public String toString() {
+        return "Meeting{" +
+                "id=" + id +
+                ", pair=" + pair +
+                ", datetime=" + datetime +
+                ", topic='" + topic +
+                ", tasksDone='" + tasksDone +
+                ", mentorRating=" + mentorRating +
+                ", menteeRating=" + menteeRating +
+                '}';
     }
 }

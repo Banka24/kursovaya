@@ -1,7 +1,9 @@
 package ru.educationsystem.educationsystem.model;
 
 import jakarta.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "mentees")
@@ -10,19 +12,36 @@ public class Mentee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "level_id", nullable = false)
-    private Level level;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
 
+    @Column(name = "middle_name")
+    private String middleName;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "goals", columnDefinition = "TEXT")
+    private String goals;
+
+    @Column(name = "current_level")
+    private Short currentLevel;
+
+    // Связи с другими сущностями
     @OneToMany(mappedBy = "mentee")
-    private List<MenteeGoal> menteeGoals;
+    private Set<Pair> pairs = new HashSet<>();
 
-    @OneToMany(mappedBy = "mentee")
-    private List<Pair> pairs;
+    public Mentee() {
+    }
+
+    public Mentee(String lastName, String firstName, String email) {
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.email = email;
+    }
 
     public Integer getId() {
         return id;
@@ -32,52 +51,91 @@ public class Mentee {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    // Удобные методы для доступа к данным пользователя
     public String getLastName() {
-        return user != null ? user.getLastName() : null;
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getFirstName() {
-        return user != null ? user.getFirstName() : null;
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getMiddleName() {
-        return user != null ? user.getMiddleName() : null;
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     public String getEmail() {
-        return user != null ? user.getEmail() : null;
+        return email;
     }
 
-    public Level getLevel() {
-        return level;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setLevel(Level level) {
-        this.level = level;
+    public String getGoals() {
+        return goals;
     }
 
-    public List<MenteeGoal> getMenteeGoals() {
-        return menteeGoals;
+    public void setGoals(String goals) {
+        this.goals = goals;
     }
 
-    public void setMenteeGoals(List<MenteeGoal> menteeGoals) {
-        this.menteeGoals = menteeGoals;
+    public Short getCurrentLevel() {
+        return currentLevel;
     }
 
-    public List<Pair> getPairs() {
+    public void setCurrentLevel(Short currentLevel) {
+        this.currentLevel = currentLevel;
+    }
+
+    public Set<Pair> getPairs() {
         return pairs;
     }
 
-    public void setPairs(List<Pair> pairs) {
+    public void setPairs(Set<Pair> pairs) {
         this.pairs = pairs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mentee mentee = (Mentee) o;
+        return Objects.equals(id, mentee.id) && 
+               Objects.equals(lastName, mentee.lastName) && 
+               Objects.equals(firstName, mentee.firstName) && 
+               Objects.equals(middleName, mentee.middleName) && 
+               Objects.equals(email, mentee.email) && 
+               Objects.equals(goals, mentee.goals) && 
+               Objects.equals(currentLevel, mentee.currentLevel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, lastName, firstName, middleName, email, goals, currentLevel);
+    }
+
+    @Override
+    public String toString() {
+        return "Mentee{" +
+                "id=" + id +
+                ", lastName='" + lastName +
+                ", firstName='" + firstName +
+                ", middleName='" + middleName +
+                ", email='" + email +
+                ", goals='" + goals +
+                ", currentLevel=" + currentLevel +
+                '}';
     }
 }

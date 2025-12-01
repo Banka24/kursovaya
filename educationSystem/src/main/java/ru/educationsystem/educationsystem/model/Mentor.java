@@ -1,7 +1,8 @@
 package ru.educationsystem.educationsystem.model;
 
 import jakarta.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -11,23 +12,44 @@ public class Mentor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
-    @Column(name = "available", nullable = false)
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "middle_name")
+    private String middleName;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "specialization", columnDefinition = "TEXT")
+    private String specialization;
+
+    @Column(name = "available")
     private Boolean available = true;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    // Связи с другими сущностями
+    @ManyToMany
     @JoinTable(
         name = "mentor_directions",
         joinColumns = @JoinColumn(name = "mentor_id"),
         inverseJoinColumns = @JoinColumn(name = "direction_id")
     )
-    private Set<Direction> directions;
+    private Set<Direction> directions = new HashSet<>();
 
     @OneToMany(mappedBy = "mentor")
-    private List<Pair> pairs;
+    private Set<Pair> pairs = new HashSet<>();
+
+    public Mentor() {
+    }
+
+    public Mentor(String lastName, String firstName, String email) {
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.email = email;
+    }
 
     public Integer getId() {
         return id;
@@ -37,29 +59,44 @@ public class Mentor {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    // Удобные методы для доступа к данным пользователя
     public String getLastName() {
-        return user != null ? user.getLastName() : null;
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getFirstName() {
-        return user != null ? user.getFirstName() : null;
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getMiddleName() {
-        return user != null ? user.getMiddleName() : null;
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     public String getEmail() {
-        return user != null ? user.getEmail() : null;
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
     }
 
     public Boolean getAvailable() {
@@ -78,11 +115,43 @@ public class Mentor {
         this.directions = directions;
     }
 
-    public List<Pair> getPairs() {
+    public Set<Pair> getPairs() {
         return pairs;
     }
 
-    public void setPairs(List<Pair> pairs) {
+    public void setPairs(Set<Pair> pairs) {
         this.pairs = pairs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mentor mentor = (Mentor) o;
+        return Objects.equals(id, mentor.id) && 
+               Objects.equals(lastName, mentor.lastName) && 
+               Objects.equals(firstName, mentor.firstName) && 
+               Objects.equals(middleName, mentor.middleName) && 
+               Objects.equals(email, mentor.email) && 
+               Objects.equals(specialization, mentor.specialization) && 
+               Objects.equals(available, mentor.available);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, lastName, firstName, middleName, email, specialization, available);
+    }
+
+    @Override
+    public String toString() {
+        return "Mentor{" +
+                "id=" + id +
+                ", lastName='" + lastName +
+                ", firstName='" + firstName +
+                ", middleName='" + middleName +
+                ", email='" + email +
+                ", specialization='" + specialization +
+                ", available=" + available +
+                '}';
     }
 }

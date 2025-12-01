@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.educationsystem.educationsystem.controller.MentorsController">
+    <top>
+        <VBox spacing="10.0">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <children>
+                    <Button text="Добавить" onAction="#addMentor" />
+                    <Button text="Изменить" onAction="#editMentor" />
+                    <Button text="Удалить" onAction="#deleteMentor" />
+                    <Separator orientation="VERTICAL" />
+                    <Button text="Обновить" onAction="#refreshMentors" />
+                </children>
+            </HBox>
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <children>
+                    <Label text="Поиск:" />
+                    <TextField fx:id="searchField" prefWidth="200.0" />
+                    <Button text="Найти" onAction="#searchMentors" />
+                </children>
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <TableView fx:id="mentorsTable" BorderPane.alignment="CENTER">
+            <columns>
+                <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="lastNameColumn" prefWidth="120.0" text="Фамилия" />
+                <TableColumn fx:id="firstNameColumn" prefWidth="120.0" text="Имя" />
+                <TableColumn fx:id="middleNameColumn" prefWidth="120.0" text="Отчество" />
+                <TableColumn fx:id="emailColumn" prefWidth="180.0" text="Email" />
+                <TableColumn fx:id="specializationColumn" prefWidth="150.0" text="Специализация" />
+                <TableColumn fx:id="availableColumn" prefWidth="100.0" text="Доступен" />
+                <TableColumn fx:id="directionsColumn" prefWidth="150.0" text="Направления" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

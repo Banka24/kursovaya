@@ -1,7 +1,7 @@
 package ru.educationsystem.educationsystem.model;
 
 import jakarta.persistence.*;
-import java.util.Set;
+import java.util.Objects;
 
 @Entity
 @Table(name = "directions")
@@ -13,8 +13,12 @@ public class Direction {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "directions")
-    private Set<Mentor> mentors;
+    public Direction() {
+    }
+
+    public Direction(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;
@@ -32,11 +36,24 @@ public class Direction {
         this.name = name;
     }
 
-    public Set<Mentor> getMentors() {
-        return mentors;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Direction direction = (Direction) o;
+        return Objects.equals(id, direction.id) && Objects.equals(name, direction.name);
     }
 
-    public void setMentors(Set<Mentor> mentors) {
-        this.mentors = mentors;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Direction{" +
+                "id=" + id +
+                ", name='" + name +
+                '}';
     }
 }

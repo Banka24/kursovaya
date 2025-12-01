@@ -2,7 +2,6 @@ package ru.educationsystem.educationsystem.repository;
 
 import org.hibernate.Session;
 import ru.educationsystem.educationsystem.model.Direction;
-
 import java.util.List;
 
 public class DirectionDao extends BaseDao<Direction> {
@@ -11,11 +10,25 @@ public class DirectionDao extends BaseDao<Direction> {
         super(Direction.class);
     }
 
-    public List<Direction> findAllWithMentors() {
-        try (Session session = getCurrentSession()) {
-            return session.createQuery(
-                "SELECT DISTINCT d FROM Direction d LEFT JOIN FETCH d.mentors", Direction.class)
-                .getResultList();
-        }
+    // Дополнительные методы для работы с направлениями
+    public Direction findByName(String name) {
+        Session session = getCurrentSession();
+        session.beginTransaction();
+        Direction direction = session.createQuery(
+                "FROM Direction d WHERE d.name = :name", Direction.class)
+                .setParameter("name", name)
+                .uniqueResult();
+        session.close();
+        return direction;
+    }
+
+    public List<Direction> findAllActive() {
+        Session session = getCurrentSession();
+        session.beginTransaction();
+        List<Direction> directions = session.createQuery(
+                "FROM Direction d WHERE d.active = true", Direction.class)
+                .list();
+        session.close();
+        return directions;
     }
 }

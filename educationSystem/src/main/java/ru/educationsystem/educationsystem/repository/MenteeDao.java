@@ -1,9 +1,7 @@
 package ru.educationsystem.educationsystem.repository;
 
 import org.hibernate.Session;
-import ru.educationsystem.educationsystem.model.Level;
 import ru.educationsystem.educationsystem.model.Mentee;
-
 import java.util.List;
 
 public class MenteeDao extends BaseDao<Mentee> {
@@ -12,41 +10,35 @@ public class MenteeDao extends BaseDao<Mentee> {
         super(Mentee.class);
     }
 
-    public List<Mentee> findByLevel(Level level) {
-        try (Session session = getCurrentSession()) {
-            return session.createQuery(
-                "SELECT m FROM Mentee m LEFT JOIN FETCH m.user LEFT JOIN FETCH m.user.roles LEFT JOIN FETCH m.level WHERE m.level = :level", Mentee.class)
-                .setParameter("level", level)
-                .getResultList();
-        }
+    // Дополнительные методы для работы с подопечными
+    public List<Mentee> findMenteesWithoutMentor() {
+        Session session = getCurrentSession();
+        session.beginTransaction();
+        List<Mentee> mentees = session.createQuery(
+                "FROM Mentee m WHERE m.pair IS NULL", Mentee.class)
+                .list();
+        session.close();
+        return mentees;
     }
 
-    public List<Mentee> findByUserId(Integer userId) {
-        try (Session session = getCurrentSession()) {
-            return session.createQuery(
-                "SELECT m FROM Mentee m LEFT JOIN FETCH m.user LEFT JOIN FETCH m.user.roles LEFT JOIN FETCH m.level WHERE m.user.id = :userId", Mentee.class)
-                .setParameter("userId", userId)
-                .getResultList();
-        }
+    public List<Mentee> findMenteesByDirection(int directionId) {
+        Session session = getCurrentSession();
+        session.beginTransaction();
+        List<Mentee> mentees = session.createQuery(
+                "FROM Mentee m WHERE m.direction.id = :directionId", Mentee.class)
+                .setParameter("directionId", directionId)
+                .list();
+        session.close();
+        return mentees;
     }
-
-    @Override
-    public java.util.Optional<Mentee> findById(Integer id) {
-        try (Session session = getCurrentSession()) {
-            Mentee mentee = session.createQuery(
-                            "SELECT m FROM Mentee m LEFT JOIN FETCH m.user LEFT JOIN FETCH m.user.roles LEFT JOIN FETCH m.level WHERE m.id = :id", Mentee.class)
-                    .setParameter("id", id)
-                    .uniqueResult();
-            return java.util.Optional.ofNullable(mentee);
-        }
-    }
-
-    @Override
-    public java.util.List<Mentee> findAll() {
-        try (Session session = getCurrentSession()) {
-            return session.createQuery(
-                            "SELECT DISTINCT m FROM Mentee m LEFT JOIN FETCH m.user LEFT JOIN FETCH m.user.roles LEFT JOIN FETCH m.level", Mentee.class)
-                    .getResultList();
-        }
+    
+    public List<Mentee> findAllWithPairs() {
+        Session session = getCurrentSession();
+        session.beginTransaction();
+        List<Mentee> mentees = session.createQuery(
+                "SELECT DISTINCT m FROM Mentee m LEFT JOIN FETCH m.pairs", Mentee.class)
+                .list();
+        session.close();
+        return mentees;
     }
 }
