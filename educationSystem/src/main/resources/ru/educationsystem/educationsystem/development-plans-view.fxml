@@ -11,35 +11,25 @@
         <HBox spacing="10.0">
             <children>
                 <ComboBox fx:id="pairComboBox" promptText="Выберите пару" prefWidth="200.0" />
-                <Button text="Создать план" onAction="#createPlan" />
+                <Button text="Создать план" onAction="#addDevelopmentPlan" />
             </children>
         </HBox>
 
-        <TableView fx:id="plansTable" prefHeight="250.0" VBox.vgrow="ALWAYS">
+        <TableView fx:id="developmentPlansTable" prefHeight="400.0" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="pairColumn" text="Пара" prefWidth="200.0" />
-                <TableColumn fx:id="goalColumn" text="Цель" prefWidth="250.0" />
-                <TableColumn fx:id="startDateColumn" text="Дата начала" prefWidth="150.0" />
-                <TableColumn fx:id="endDateColumn" text="Дата окончания" prefWidth="150.0" />
-                <TableColumn fx:id="statusColumn" text="Статус" prefWidth="100.0" />
-                <TableColumn fx:id="actionsColumn" text="Действия" prefWidth="100.0" />
-            </columns>
-        </TableView>
-
-        <Label text="Этапы плана:" style="-fx-font-weight: bold;" />
-
-        <TableView fx:id="stagesTable" prefHeight="150.0">
-            <columns>
-                <TableColumn fx:id="stageNameColumn" text="Название этапа" prefWidth="200.0" />
-                <TableColumn fx:id="stageDescriptionColumn" text="Описание" prefWidth="300.0" />
-                <TableColumn fx:id="stageDeadlineColumn" text="Срок" prefWidth="150.0" />
-                <TableColumn fx:id="stageCompletedColumn" text="Выполнено" prefWidth="100.0" />
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="50.0" />
+                <TableColumn fx:id="pairColumn" text="Пара" prefWidth="250.0" />
+                <TableColumn fx:id="titleColumn" text="Название" prefWidth="200.0" />
+                <TableColumn fx:id="descriptionColumn" text="Описание" prefWidth="250.0" />
+                <TableColumn fx:id="deadlineColumn" text="Срок" prefWidth="120.0" />
             </columns>
         </TableView>
 
         <HBox spacing="10.0" alignment="CENTER_RIGHT">
             <children>
-                <Button text="Добавить этап" onAction="#addStage" />
+                <Button text="Редактировать" onAction="#editDevelopmentPlan" />
+                <Button text="Удалить" onAction="#deleteDevelopmentPlan" />
+                <Button text="Обновить" onAction="#refreshDevelopmentPlans" />
                 <Button text="Закрыть" onAction="#closeWindow" />
             </children>
         </HBox>

@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
+import javafx.stage.Stage;
 import ru.educationsystem.educationsystem.model.Mentee;
 import ru.educationsystem.educationsystem.model.Mentor;
 import ru.educationsystem.educationsystem.model.Pair;
@@ -42,7 +43,7 @@ public class PairsController {
     private TableColumn<Pair, LocalDate> startDateColumn;
 
     @FXML
-    private TableColumn<Pair, LocalDate> endDateColumn;
+    private TableColumn<Pair, String> statusColumn;
 
     @FXML
     private TextField searchField;
@@ -79,6 +80,7 @@ public class PairsController {
         });
 
         startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
         // Загрузка данных
         refreshPairs();
@@ -184,17 +186,41 @@ public class PairsController {
 
         ComboBox<Mentor> mentorComboBox = new ComboBox<>();
         mentorComboBox.setItems(FXCollections.observableArrayList(mentorService.getAllMentors()));
+        mentorComboBox.setConverter(new javafx.util.StringConverter<Mentor>() {
+            @Override
+            public String toString(Mentor mentor) {
+                return mentor == null ? "" : mentor.getLastName() + " " + mentor.getFirstName();
+            }
+            @Override
+            public Mentor fromString(String string) {
+                return null;
+            }
+        });
 
         ComboBox<Mentee> menteeComboBox = new ComboBox<>();
         menteeComboBox.setItems(FXCollections.observableArrayList(menteeService.getAllMentees()));
+        menteeComboBox.setConverter(new javafx.util.StringConverter<Mentee>() {
+            @Override
+            public String toString(Mentee mentee) {
+                return mentee == null ? "" : mentee.getLastName() + " " + mentee.getFirstName();
+            }
+            @Override
+            public Mentee fromString(String string) {
+                return null;
+            }
+        });
 
         DatePicker startDatePicker = new DatePicker();
-        DatePicker endDatePicker = new DatePicker();
+        ComboBox<String> statusComboBox = new ComboBox<>();
+        statusComboBox.setItems(FXCollections.observableArrayList("active", "paused", "completed"));
 
         if (pair != null) {
             mentorComboBox.setValue(pair.getMentor());
             menteeComboBox.setValue(pair.getMentee());
             startDatePicker.setValue(pair.getStartDate());
+            statusComboBox.setValue(pair.getStatus());
+        } else {
+            statusComboBox.setValue("active");
         }
 
         grid.add(new Label("Наставник:"), 0, 0);
@@ -203,8 +229,8 @@ public class PairsController {
         grid.add(menteeComboBox, 1, 1);
         grid.add(new Label("Дата начала:"), 0, 2);
         grid.add(startDatePicker, 1, 2);
-        grid.add(new Label("Дата окончания:"), 0, 3);
-        grid.add(endDatePicker, 1, 3);
+        grid.add(new Label("Статус:"), 0, 3);
+        grid.add(statusComboBox, 1, 3);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -224,15 +250,14 @@ public class PairsController {
                 }
 
                 LocalDate startDate = startDatePicker.getValue();
-                LocalDate endDate = endDatePicker.getValue();
+                String status = statusComboBox.getValue();
 
                 if (startDate == null) {
-                    showAlert("Выберите дату начала");
-                    return null;
+                    startDate = LocalDate.now();
                 }
 
-                if (endDate != null && endDate.isBefore(startDate)) {
-                    showAlert("Дата окончания не может быть раньше даты начала");
+                if (status == null || status.isEmpty()) {
+                    showAlert("Выберите статус");
                     return null;
                 }
 
@@ -240,7 +265,7 @@ public class PairsController {
                 resultPair.setMentor(selectedMentor);
                 resultPair.setMentee(selectedMentee);
                 resultPair.setStartDate(startDate);
-                resultPair.setStatus("Активна");
+                resultPair.setStatus(status);
 
                 return resultPair;
             }
@@ -248,6 +273,12 @@ public class PairsController {
         });
 
         return dialog;
+    }
+
+    @FXML
+    public void closeWindow() {
+        Stage stage = (Stage) pairsTable.getScene().getWindow();
+        stage.close();
     }
 
     private void showAlert(String message) {

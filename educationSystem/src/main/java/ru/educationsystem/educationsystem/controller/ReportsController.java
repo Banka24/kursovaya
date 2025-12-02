@@ -56,6 +56,16 @@ public class ReportsController implements Initializable {
         // Загрузка направлений
         List<Direction> directions = directionService.findAll();
         directionComboBox.getItems().addAll(directions);
+        directionComboBox.setConverter(new javafx.util.StringConverter<Direction>() {
+            @Override
+            public String toString(Direction direction) {
+                return direction == null ? "" : direction.getName();
+            }
+            @Override
+            public Direction fromString(String string) {
+                return null;
+            }
+        });
 
         // Установка значений по умолчанию
         startDatePicker.setValue(LocalDate.now().minusMonths(1));
@@ -75,12 +85,13 @@ public class ReportsController implements Initializable {
         }
 
         StringBuilder report = new StringBuilder();
-        report.append("ОТЧЕТ: ").append(reportType);
-        report.append("Период: с ").append(startDate).append(" по ").append(endDate);
+        report.append("ОТЧЕТ: ").append(reportType).append("\n\n");
+        report.append("Период: с ").append(startDate).append(" по ").append(endDate).append("\n");
 
         if (direction != null) {
-            report.append("Направление: ").append(direction.getName());
+            report.append("Направление: ").append(direction.getName()).append("\n");
         }
+        report.append("\n");
 
         switch (reportType) {
             case "Эффективность наставничества":
@@ -101,24 +112,78 @@ public class ReportsController implements Initializable {
     }
 
     private void generateEfficiencyReport(StringBuilder report, LocalDate startDate, LocalDate endDate, Direction direction) {
-        // Здесь будет логика расчета эффективности наставничества
-        report.append("Средний рейтинг наставников: 4.5");
-        report.append("% завершенных планов: 78%");
-        report.append("Количество активных пар: 12");
+        var pairs = pairService.getAllPairsWithMentorAndMentee();
+        var activePairs = pairs.stream().filter(p -> "active".equals(p.getStatus())).count();
+        var completedPairs = pairs.stream().filter(p -> "completed".equals(p.getStatus())).count();
+        
+        report.append("ЭФФЕКТИВНОСТЬ НАСТАВНИЧЕСТВА").append("\n");
+        report.append("Всего пар: ").append(pairs.size()).append("\n");
+        report.append("Активных пар: ").append(activePairs).append("\n");
+        report.append("Завершенных пар: ").append(completedPairs).append("\n");
+        
+        var meetings = meetingService.getAllMeetingsWithPair();
+        if (!meetings.isEmpty()) {
+            double avgMentorRating = meetings.stream()
+                .filter(m -> m.getMentorRating() != null)
+                .mapToInt(m -> m.getMentorRating())
+                .average().orElse(0.0);
+            double avgMenteeRating = meetings.stream()
+                .filter(m -> m.getMenteeRating() != null)
+                .mapToInt(m -> m.getMenteeRating())
+                .average().orElse(0.0);
+            report.append("Средний рейтинг наставников: ").append(String.format("%.2f", avgMentorRating)).append("\n");
+            report.append("Средний рейтинг подопечных: ").append(String.format("%.2f", avgMenteeRating)).append("\n");
+        }
+        report.append("\n");
     }
 
     private void generateProgressReport(StringBuilder report, LocalDate startDate, LocalDate endDate, Direction direction) {
-        // Здесь будет логика отчета по прогрессу
-        report.append("Всего планов развития: 15");
-        report.append("Завершено в срок: 12");
-        report.append("Отложено: 3");
+        var plans = developmentPlanService.getAllDevelopmentPlansWithPair();
+        var completedPlans = plans.stream()
+            .filter(p -> p.getDeadline() != null && p.getDeadline().isBefore(LocalDate.now()))
+            .count();
+        var activePlans = plans.stream()
+            .filter(p -> p.getDeadline() == null || !p.getDeadline().isBefore(LocalDate.now()))
+            .count();
+        
+        report.append("ПРОГРЕСС ПО ПЛАНАМ РАЗВИТИЯ").append("\n");
+        report.append("Всего планов развития: ").append(plans.size()).append("\n");
+        report.append("Активных планов: ").append(activePlans).append("\n");
+        report.append("Завершенных планов: ").append(completedPlans).append("\n");
+        
+        if (plans.size() > 0) {
+            double completionRate = (completedPlans * 100.0) / plans.size();
+            report.append("Процент завершения: ").append(String.format("%.1f%%", completionRate)).append("\n");
+        }
+        report.append("\n");
     }
 
     private void generateMeetingsReport(StringBuilder report, LocalDate startDate, LocalDate endDate, Direction direction) {
-        // Здесь будет логика отчета по встречам
-        report.append("Всего встреч: 45");
-        report.append("Средняя оценка: 4.3");
-        report.append("Самые частые темы: Java, Spring, Hibernate");
+        var meetings = meetingService.getAllMeetingsWithPair();
+        var filteredMeetings = meetings.stream()
+            .filter(m -> m.getDatetime() != null)
+            .filter(m -> {
+                LocalDate meetingDate = m.getDatetime().toLocalDate();
+                return !meetingDate.isBefore(startDate) && !meetingDate.isAfter(endDate);
+            })
+            .toList();
+        
+        report.append("СТАТИСТИКА ВСТРЕЧ").append("\n");
+        report.append("Всего встреч за период: ").append(filteredMeetings.size()).append("\n");
+        
+        if (!filteredMeetings.isEmpty()) {
+            double avgRating = filteredMeetings.stream()
+                .filter(m -> m.getMentorRating() != null && m.getMenteeRating() != null)
+                .mapToDouble(m -> (m.getMentorRating() + m.getMenteeRating()) / 2.0)
+                .average().orElse(0.0);
+            report.append("Средняя оценка встреч: ").append(String.format("%.2f", avgRating)).append("\n");
+            
+            var topicsCount = filteredMeetings.stream()
+                .filter(m -> m.getTopic() != null && !m.getTopic().isEmpty())
+                .count();
+            report.append("Встреч с темами: ").append(topicsCount).append("\n");
+        }
+        report.append("\n");
     }
 
     private void generateSummaryReport(StringBuilder report, LocalDate startDate, LocalDate endDate, Direction direction) {

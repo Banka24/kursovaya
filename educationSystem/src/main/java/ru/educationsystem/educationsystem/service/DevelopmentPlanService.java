@@ -1,8 +1,11 @@
 package ru.educationsystem.educationsystem.service;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import ru.educationsystem.educationsystem.model.DevelopmentPlan;
 import ru.educationsystem.educationsystem.model.Pair;
 import ru.educationsystem.educationsystem.repository.DevelopmentPlanDao;
+import ru.educationsystem.educationsystem.util.HibernateSessionFactoryUtil;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,11 +40,29 @@ public class DevelopmentPlanService extends BaseService<DevelopmentPlan, Develop
     }
     
     public List<DevelopmentPlan> getAllDevelopmentPlansWithPair() {
-        return dao.findAllWithPair();
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<DevelopmentPlan> result = dao.findAllWithPair();
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     // Метод для получения планов по конкретной паре
     public List<DevelopmentPlan> getPlansByPair(Pair pair) {
-        return dao.findPlansByPair(pair.getId());
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<DevelopmentPlan> result = dao.findPlansByPair(pair.getId());
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 }

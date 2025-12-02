@@ -23,15 +23,6 @@ import java.util.ResourceBundle;
 public class MeetingsController implements Initializable {
 
     @FXML
-    private ComboBox<Pair> pairComboBox;
-
-    @FXML
-    private DatePicker meetingDatePicker;
-
-    @FXML
-    private TextField topicField;
-
-    @FXML
     private TableView<Meeting> meetingsTable;
 
     @FXML
@@ -100,10 +91,6 @@ public class MeetingsController implements Initializable {
             }
         });
 
-        // Загрузка пар
-        List<Pair> pairs = pairService.findAll();
-        pairComboBox.setItems(FXCollections.observableArrayList(pairs));
-
         // Загрузка встреч
         loadMeetings();
     }
@@ -115,36 +102,127 @@ public class MeetingsController implements Initializable {
 
     @FXML
     public void addMeeting() {
-        Pair pair = pairComboBox.getValue();
-        LocalDate date = meetingDatePicker.getValue();
-        String topic = topicField.getText();
-
-        if (pair == null || date == null || topic.isEmpty()) {
-            showAlert("Ошибка", "Пожалуйста, заполните все поля");
-            return;
-        }
-
-        Meeting meeting = new Meeting();
-        meeting.setPair(pair);
-        meeting.setDatetime(date.atStartOfDay());
-        meeting.setTopic(topic);
-
-        meetingService.save(meeting);
-
-        // Очистка полей
-        pairComboBox.setValue(null);
-        meetingDatePicker.setValue(null);
-        topicField.clear();
-
-        // Обновление таблицы
-        loadMeetings();
-
-        showAlert("Успех", "Встреча успешно добавлена");
+        Dialog<Meeting> dialog = createMeetingDialog(null);
+        dialog.showAndWait().ifPresent(meeting -> {
+            meetingService.save(meeting);
+            loadMeetings();
+            showAlert("Успех", "Встреча успешно добавлена");
+        });
     }
 
     private void editMeeting(Meeting meeting) {
-        // Здесь будет логика редактирования встречи
-        showAlert("Информация", "Функция редактирования будет реализована в следующей версии");
+        Dialog<Meeting> dialog = createMeetingDialog(meeting);
+        dialog.showAndWait().ifPresent(editedMeeting -> {
+            meetingService.update(editedMeeting);
+            loadMeetings();
+            showAlert("Успех", "Встреча успешно обновлена");
+        });
+    }
+
+    private Dialog<Meeting> createMeetingDialog(Meeting meeting) {
+        Dialog<Meeting> dialog = new Dialog<>();
+        dialog.setTitle(meeting == null ? "Добавление встречи" : "Редактирование встречи");
+        dialog.setHeaderText(null);
+
+        ButtonType saveButtonType = new ButtonType("Сохранить", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+
+        ComboBox<Pair> pairCombo = new ComboBox<>();
+        pairCombo.setItems(FXCollections.observableArrayList(pairService.getAllPairsWithMentorAndMentee()));
+        pairCombo.setConverter(new javafx.util.StringConverter<Pair>() {
+            @Override
+            public String toString(Pair pair) {
+                if (pair == null) return "";
+                return pair.getMentor().getLastName() + " - " + pair.getMentee().getLastName();
+            }
+            @Override
+            public Pair fromString(String string) {
+                return null;
+            }
+        });
+
+        DatePicker datePicker = new DatePicker();
+        TextField topicField = new TextField();
+        TextField tasksField = new TextField();
+        TextField mentorRatingField = new TextField();
+        TextField menteeRatingField = new TextField();
+
+        if (meeting != null) {
+            pairCombo.setValue(meeting.getPair());
+            if (meeting.getDatetime() != null) {
+                datePicker.setValue(meeting.getDatetime().toLocalDate());
+            }
+            topicField.setText(meeting.getTopic());
+            tasksField.setText(meeting.getTasksDone());
+            if (meeting.getMentorRating() != null) {
+                mentorRatingField.setText(meeting.getMentorRating().toString());
+            }
+            if (meeting.getMenteeRating() != null) {
+                menteeRatingField.setText(meeting.getMenteeRating().toString());
+            }
+        }
+
+        grid.add(new Label("Пара:"), 0, 0);
+        grid.add(pairCombo, 1, 0);
+        grid.add(new Label("Дата:"), 0, 1);
+        grid.add(datePicker, 1, 1);
+        grid.add(new Label("Тема:"), 0, 2);
+        grid.add(topicField, 1, 2);
+        grid.add(new Label("Выполненные задачи:"), 0, 3);
+        grid.add(tasksField, 1, 3);
+        grid.add(new Label("Рейтинг наставника (1-5):"), 0, 4);
+        grid.add(mentorRatingField, 1, 4);
+        grid.add(new Label("Рейтинг подопечного (1-5):"), 0, 5);
+        grid.add(menteeRatingField, 1, 5);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                Pair selectedPair = pairCombo.getValue();
+                LocalDate selectedDate = datePicker.getValue();
+                String topic = topicField.getText();
+
+                if (selectedPair == null || selectedDate == null || topic == null || topic.trim().isEmpty()) {
+                    showAlert("Ошибка", "Заполните обязательные поля: Пара, Дата и Тема");
+                    return null;
+                }
+
+                Meeting resultMeeting = meeting != null ? meeting : new Meeting();
+                resultMeeting.setPair(selectedPair);
+                resultMeeting.setDatetime(selectedDate.atStartOfDay());
+                resultMeeting.setTopic(topic);
+                resultMeeting.setTasksDone(tasksField.getText());
+
+                try {
+                    if (!mentorRatingField.getText().isEmpty()) {
+                        short rating = Short.parseShort(mentorRatingField.getText());
+                        if (rating >= 1 && rating <= 5) {
+                            resultMeeting.setMentorRating(rating);
+                        }
+                    }
+                    if (!menteeRatingField.getText().isEmpty()) {
+                        short rating = Short.parseShort(menteeRatingField.getText());
+                        if (rating >= 1 && rating <= 5) {
+                            resultMeeting.setMenteeRating(rating);
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    showAlert("Ошибка", "Рейтинг должен быть числом от 1 до 5");
+                    return null;
+                }
+
+                return resultMeeting;
+            }
+            return null;
+        });
+
+        return dialog;
     }
 
     private void deleteMeeting(Meeting meeting) {

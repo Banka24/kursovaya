@@ -50,19 +50,15 @@ public abstract class BaseDao<T> {
 
     public T findOne(final long id) {
         Session session = getCurrentSession();
-        session.beginTransaction();
         T item = session.get(clazz, id);
-        session.close();
         return item;
     }
 
 
     public List<T> findAll() {
         Session session = getCurrentSession();
-        session.beginTransaction();
         Query<T> query = session.createQuery("from " + clazz.getName(), clazz);
         List<T> items = query.list();
-        session.close();
         return items;
     }
 }

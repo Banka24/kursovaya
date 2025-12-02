@@ -1,9 +1,12 @@
 package ru.educationsystem.educationsystem.service;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import ru.educationsystem.educationsystem.model.Mentor;
 import ru.educationsystem.educationsystem.model.Mentee;
 import ru.educationsystem.educationsystem.model.Pair;
 import ru.educationsystem.educationsystem.repository.PairDao;
+import ru.educationsystem.educationsystem.util.HibernateSessionFactoryUtil;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,15 +16,42 @@ public class PairService extends BaseService<Pair, PairDao> {
     }
 
     public List<Pair> findPairsByMentor(long mentorId) {
-        return dao.findPairsByMentor(mentorId);
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Pair> result = dao.findPairsByMentor(mentorId);
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     public List<Pair> findPairsByMentee(long menteeId) {
-        return dao.findPairsByMentee(menteeId);
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Pair> result = dao.findPairsByMentee(menteeId);
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     public List<Pair> findActivePairs() {
-        return dao.findActivePairs();
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Pair> result = dao.findActivePairs();
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     public Pair createPair(Mentor mentor, Mentee mentee, String status) {
@@ -50,6 +80,15 @@ public class PairService extends BaseService<Pair, PairDao> {
     }
     
     public List<Pair> getAllPairsWithMentorAndMentee() {
-        return dao.findAllWithMentorAndMentee();
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Pair> result = dao.findAllWithMentorAndMentee();
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 }

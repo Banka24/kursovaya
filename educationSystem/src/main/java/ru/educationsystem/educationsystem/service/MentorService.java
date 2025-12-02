@@ -1,7 +1,10 @@
 package ru.educationsystem.educationsystem.service;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import ru.educationsystem.educationsystem.model.Mentor;
 import ru.educationsystem.educationsystem.repository.MentorDao;
+import ru.educationsystem.educationsystem.util.HibernateSessionFactoryUtil;
 import java.util.List;
 
 public class MentorService extends BaseService<Mentor, MentorDao> {
@@ -10,11 +13,29 @@ public class MentorService extends BaseService<Mentor, MentorDao> {
     }
 
     public List<Mentor> findMentorsByDirection(int directionId) {
-        return dao.findMentorsByDirection(directionId);
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Mentor> result = dao.findMentorsByDirection(directionId);
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     public List<Mentor> findAvailableMentors() {
-        return dao.findAvailableMentors();
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Mentor> result = dao.findAvailableMentors();
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     public Mentor createMentor(String lastName, String firstName, String middleName, 
@@ -46,6 +67,15 @@ public class MentorService extends BaseService<Mentor, MentorDao> {
     }
     
     public List<Mentor> getAllMentorsWithDirections() {
-        return dao.findAllWithDirections();
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Mentor> result = dao.findAllWithDirections();
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 }

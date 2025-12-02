@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
+import javafx.stage.Stage;
 import ru.educationsystem.educationsystem.model.DevelopmentPlan;
 import ru.educationsystem.educationsystem.model.Pair;
 import ru.educationsystem.educationsystem.repository.DevelopmentPlanDao;
@@ -181,7 +182,18 @@ public class DevelopmentPlansController {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         ComboBox<Pair> pairComboBox = new ComboBox<>();
-        pairComboBox.setItems(FXCollections.observableArrayList(pairService.getAllPairs()));
+        pairComboBox.setItems(FXCollections.observableArrayList(pairService.getAllPairsWithMentorAndMentee()));
+        pairComboBox.setConverter(new javafx.util.StringConverter<Pair>() {
+            @Override
+            public String toString(Pair pair) {
+                if (pair == null) return "";
+                return pair.getMentor().getLastName() + " - " + pair.getMentee().getLastName();
+            }
+            @Override
+            public Pair fromString(String string) {
+                return null;
+            }
+        });
 
         TextField titleField = new TextField();
         TextField descriptionField = new TextField();
@@ -200,8 +212,8 @@ public class DevelopmentPlansController {
         grid.add(titleField, 1, 1);
         grid.add(new Label("Описание:"), 0, 2);
         grid.add(descriptionField, 1, 2);
-        grid.add(new Label("Срок выполнения:"), 0, 4);
-        grid.add(endDatePicker, 1, 4);
+        grid.add(new Label("Срок выполнения:"), 0, 3);
+        grid.add(endDatePicker, 1, 3);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -235,6 +247,12 @@ public class DevelopmentPlansController {
         });
 
         return dialog;
+    }
+
+    @FXML
+    public void closeWindow() {
+        Stage stage = (Stage) developmentPlansTable.getScene().getWindow();
+        stage.close();
     }
 
     private void showAlert(String message) {

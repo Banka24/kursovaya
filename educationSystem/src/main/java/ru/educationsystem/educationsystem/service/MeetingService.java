@@ -1,8 +1,11 @@
 package ru.educationsystem.educationsystem.service;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import ru.educationsystem.educationsystem.model.Meeting;
 import ru.educationsystem.educationsystem.model.Pair;
 import ru.educationsystem.educationsystem.repository.MeetingDao;
+import ru.educationsystem.educationsystem.util.HibernateSessionFactoryUtil;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,50 +43,93 @@ public class MeetingService extends BaseService<Meeting, MeetingDao> {
     }
     
     public List<Meeting> getAllMeetingsWithPair() {
-        return dao.findAllWithPair();
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Meeting> result = dao.findAllWithPair();
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     // Метод для получения встреч по конкретной паре
     public List<Meeting> getMeetingsByPair(Pair pair) {
-        return dao.findMeetingsByPair(pair.getId());
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Meeting> result = dao.findMeetingsByPair(pair.getId());
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     // Метод для получения встреч по диапазону дат
     public List<Meeting> getMeetingsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        java.util.Date start = java.sql.Timestamp.valueOf(startDate);
-        java.util.Date end = java.sql.Timestamp.valueOf(endDate);
-        return dao.findMeetingsByDateRange(start, end);
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            java.util.Date start = java.sql.Timestamp.valueOf(startDate);
+            java.util.Date end = java.sql.Timestamp.valueOf(endDate);
+            List<Meeting> result = dao.findMeetingsByDateRange(start, end);
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     // Метод для получения среднего рейтинга наставника
     public Double getAverageMentorRating(int mentorId) {
-        List<Meeting> meetings = dao.findAll();
-        double sum = 0;
-        int count = 0;
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Meeting> meetings = dao.findAll();
+            double sum = 0;
+            int count = 0;
 
-        for (Meeting meeting : meetings) {
-            if (meeting.getPair().getMentor().getId() == mentorId && meeting.getMentorRating() != null) {
-                sum += meeting.getMentorRating();
-                count++;
+            for (Meeting meeting : meetings) {
+                if (meeting.getPair().getMentor().getId() == mentorId && meeting.getMentorRating() != null) {
+                    sum += meeting.getMentorRating();
+                    count++;
+                }
             }
-        }
 
-        return count > 0 ? sum / count : 0.0;
+            transaction.commit();
+            return count > 0 ? sum / count : 0.0;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
     // Метод для получения среднего рейтинга подопечного
     public Double getAverageMenteeRating(int menteeId) {
-        List<Meeting> meetings = dao.findAll();
-        double sum = 0;
-        int count = 0;
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Meeting> meetings = dao.findAll();
+            double sum = 0;
+            int count = 0;
 
-        for (Meeting meeting : meetings) {
-            if (meeting.getPair().getMentee().getId() == menteeId && meeting.getMenteeRating() != null) {
-                sum += meeting.getMenteeRating();
-                count++;
+            for (Meeting meeting : meetings) {
+                if (meeting.getPair().getMentee().getId() == menteeId && meeting.getMenteeRating() != null) {
+                    sum += meeting.getMenteeRating();
+                    count++;
+                }
             }
-        }
 
-        return count > 0 ? sum / count : 0.0;
+            transaction.commit();
+            return count > 0 ? sum / count : 0.0;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 }

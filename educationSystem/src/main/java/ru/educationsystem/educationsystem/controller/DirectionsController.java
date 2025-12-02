@@ -12,13 +12,14 @@ import ru.educationsystem.educationsystem.model.Mentor;
 import ru.educationsystem.educationsystem.repository.DirectionDao;
 import ru.educationsystem.educationsystem.repository.MentorDao;
 import ru.educationsystem.educationsystem.service.DirectionService;
+import ru.educationsystem.educationsystem.service.MentorService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DirectionsController {
     private final DirectionService directionService;
-    private final MentorDao mentorDao;
+    private final MentorService mentorService;
     private final ObservableList<Direction> directionsObservableList = FXCollections.observableArrayList();
 
     @FXML
@@ -38,7 +39,7 @@ public class DirectionsController {
 
     public DirectionsController() {
         this.directionService = new DirectionService(new DirectionDao());
-        this.mentorDao = new MentorDao();
+        this.mentorService = new MentorService(new MentorDao());
     }
 
     @FXML
@@ -50,7 +51,7 @@ public class DirectionsController {
         // Настройка колонки количества наставников
         mentorsCountColumn.setCellValueFactory(cellData -> {
             Direction direction = cellData.getValue();
-            List<Mentor> mentors = mentorDao.findMentorsByDirection(direction.getId());
+            List<Mentor> mentors = mentorService.findMentorsByDirection(direction.getId());
             return new javafx.beans.property.SimpleIntegerProperty(mentors.size()).asObject();
         });
 
@@ -91,7 +92,7 @@ public class DirectionsController {
         }
 
         // Проверка, есть ли наставники с этим направлением
-        List<Mentor> mentors = mentorDao.findMentorsByDirection(selectedDirection.getId());
+        List<Mentor> mentors = mentorService.findMentorsByDirection(selectedDirection.getId());
         if (!mentors.isEmpty()) {
             showAlert("Нельзя удалить направление, так как оно используется наставниками");
             return;

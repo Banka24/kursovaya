@@ -1,7 +1,10 @@
 package ru.educationsystem.educationsystem.service;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import ru.educationsystem.educationsystem.model.Mentee;
 import ru.educationsystem.educationsystem.repository.MenteeDao;
+import ru.educationsystem.educationsystem.util.HibernateSessionFactoryUtil;
 import java.util.List;
 
 public class MenteeService extends BaseService<Mentee, MenteeDao> {
@@ -38,6 +41,15 @@ public class MenteeService extends BaseService<Mentee, MenteeDao> {
     }
     
     public List<Mentee> getAllMenteesWithPairs() {
-        return dao.findAllWithPairs();
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            List<Mentee> result = dao.findAllWithPairs();
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 }

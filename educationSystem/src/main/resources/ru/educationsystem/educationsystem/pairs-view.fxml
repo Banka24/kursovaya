@@ -12,17 +12,17 @@
             <children>
                 <ComboBox fx:id="mentorComboBox" promptText="Выберите наставника" prefWidth="200.0" />
                 <ComboBox fx:id="menteeComboBox" promptText="Выберите подопечного" prefWidth="200.0" />
-                <Button text="Создать пару" onAction="#createPair" />
+                <Button text="Создать пару" onAction="#addPair" />
             </children>
         </HBox>
 
         <TableView fx:id="pairsTable" prefHeight="300.0" VBox.vgrow="ALWAYS">
             <columns>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="50.0" />
                 <TableColumn fx:id="mentorColumn" text="Наставник" prefWidth="200.0" />
                 <TableColumn fx:id="menteeColumn" text="Подопечный" prefWidth="200.0" />
-                <TableColumn fx:id="directionColumn" text="Направление" prefWidth="150.0" />
-                <TableColumn fx:id="startDateColumn" text="Дата начала" prefWidth="150.0" />
-                <TableColumn fx:id="actionsColumn" text="Действия" prefWidth="100.0" />
+                <TableColumn fx:id="startDateColumn" text="Дата начала" prefWidth="120.0" />
+                <TableColumn fx:id="statusColumn" text="Статус" prefWidth="100.0" />
             </columns>
         </TableView>
 
