@@ -1,7 +1,6 @@
 package ru.educationsystem.educationsystem.repository;
 
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import ru.educationsystem.educationsystem.util.HibernateSessionFactoryUtil;
 
@@ -18,47 +17,39 @@ public abstract class BaseDao<T> {
         return HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
     }
 
-
     public void save(final T entity) {
         Session session = getCurrentSession();
-        Transaction tx1 = session.beginTransaction();
         session.persist(entity);
-        tx1.commit();
-        session.close();
     }
 
     public void update(final T entity) {
         Session session = getCurrentSession();
-        Transaction tx1 = session.beginTransaction();
         session.merge(entity);
-        tx1.commit();
-        session.close();
     }
 
     public void delete(final T entity) {
         Session session = getCurrentSession();
-        Transaction tx1 = session.beginTransaction();
-        session.remove(entity);
-        tx1.commit();
-        session.close();
+        // Re-attach entity if detached
+        T managedEntity = session.merge(entity);
+        session.remove(managedEntity);
     }
 
     public void deleteById(final long entityId) {
-        final T entity = findOne(entityId);
-        delete(entity);
+        Session session = getCurrentSession();
+        T entity = session.get(clazz, entityId);
+        if (entity != null) {
+            session.remove(entity);
+        }
     }
 
     public T findOne(final long id) {
         Session session = getCurrentSession();
-        T item = session.get(clazz, id);
-        return item;
+        return session.get(clazz, id);
     }
-
 
     public List<T> findAll() {
         Session session = getCurrentSession();
         Query<T> query = session.createQuery("from " + clazz.getName(), clazz);
-        List<T> items = query.list();
-        return items;
+        return query.list();
     }
 }

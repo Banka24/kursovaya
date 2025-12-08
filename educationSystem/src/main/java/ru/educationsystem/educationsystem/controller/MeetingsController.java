@@ -43,6 +43,15 @@ public class MeetingsController implements Initializable {
     @FXML
     private TableColumn<Meeting, Void> actionsColumn;
 
+    @FXML
+    private ComboBox<Pair> pairComboBox;
+
+    @FXML
+    private DatePicker meetingDatePicker;
+
+    @FXML
+    private TextField topicField;
+
     private final PairService pairService = new PairService(new PairDao());
     private final MeetingService meetingService = new MeetingService(new MeetingDao());
 
@@ -91,6 +100,21 @@ public class MeetingsController implements Initializable {
             }
         });
 
+        // Инициализация ComboBox для пар
+        List<Pair> pairs = pairService.getAllPairsWithMentorAndMentee();
+        pairComboBox.setItems(FXCollections.observableArrayList(pairs));
+        pairComboBox.setConverter(new javafx.util.StringConverter<Pair>() {
+            @Override
+            public String toString(Pair pair) {
+                if (pair == null) return "";
+                return pair.getMentor().getLastName() + " - " + pair.getMentee().getLastName();
+            }
+            @Override
+            public Pair fromString(String string) {
+                return null;
+            }
+        });
+
         // Загрузка встреч
         loadMeetings();
     }
@@ -102,20 +126,53 @@ public class MeetingsController implements Initializable {
 
     @FXML
     public void addMeeting() {
-        Dialog<Meeting> dialog = createMeetingDialog(null);
-        dialog.showAndWait().ifPresent(meeting -> {
-            meetingService.save(meeting);
-            loadMeetings();
-            showAlert("Успех", "Встреча успешно добавлена");
-        });
+        // Проверяем выбор из формы
+        Pair selectedPair = pairComboBox.getValue();
+        LocalDate selectedDate = meetingDatePicker.getValue();
+        String topic = topicField != null ? topicField.getText() : null;
+        
+        if (selectedPair != null && selectedDate != null && topic != null && !topic.trim().isEmpty()) {
+            // Если заполнены все поля - создаем встречу сразу
+            try {
+                Meeting meeting = new Meeting();
+                meeting.setPair(selectedPair);
+                meeting.setDatetime(selectedDate.atStartOfDay());
+                meeting.setTopic(topic);
+                meetingService.save(meeting);
+                loadMeetings();
+                // Очищаем поля
+                pairComboBox.setValue(null);
+                meetingDatePicker.setValue(null);
+                if (topicField != null) topicField.clear();
+                showAlert("Успех", "Встреча успешно добавлена");
+            } catch (Exception e) {
+                showAlert("Ошибка", "Ошибка при добавлении встречи.");
+            }
+        } else {
+            // Иначе открываем диалог
+            Dialog<Meeting> dialog = createMeetingDialog(null);
+            dialog.showAndWait().ifPresent(meeting -> {
+                try {
+                    meetingService.save(meeting);
+                    loadMeetings();
+                    showAlert("Успех", "Встреча успешно добавлена");
+                } catch (Exception e) {
+                    showAlert("Ошибка", "Ошибка при добавлении встречи.");
+                }
+            });
+        }
     }
 
     private void editMeeting(Meeting meeting) {
         Dialog<Meeting> dialog = createMeetingDialog(meeting);
         dialog.showAndWait().ifPresent(editedMeeting -> {
-            meetingService.update(editedMeeting);
-            loadMeetings();
-            showAlert("Успех", "Встреча успешно обновлена");
+            try {
+                meetingService.update(editedMeeting);
+                loadMeetings();
+                showAlert("Успех", "Встреча успешно обновлена");
+            } catch (Exception e) {
+                showAlert("Ошибка", "Ошибка при редактировании встречи.");
+            }
         });
     }
 
@@ -133,7 +190,8 @@ public class MeetingsController implements Initializable {
         grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
 
         ComboBox<Pair> pairCombo = new ComboBox<>();
-        pairCombo.setItems(FXCollections.observableArrayList(pairService.getAllPairsWithMentorAndMentee()));
+        List<Pair> pairsList = pairService.getAllPairsWithMentorAndMentee();
+        pairCombo.setItems(FXCollections.observableArrayList(pairsList));
         pairCombo.setConverter(new javafx.util.StringConverter<Pair>() {
             @Override
             public String toString(Pair pair) {
@@ -153,7 +211,13 @@ public class MeetingsController implements Initializable {
         TextField menteeRatingField = new TextField();
 
         if (meeting != null) {
-            pairCombo.setValue(meeting.getPair());
+            // Находим соответствующую пару по ID
+            Integer pairId = meeting.getPair().getId();
+            pairsList.stream()
+                    .filter(p -> p.getId().equals(pairId))
+                    .findFirst()
+                    .ifPresent(pairCombo::setValue);
+            
             if (meeting.getDatetime() != null) {
                 datePicker.setValue(meeting.getDatetime().toLocalDate());
             }
@@ -232,9 +296,13 @@ public class MeetingsController implements Initializable {
         confirmation.setContentText("Вы уверены, что хотите удалить эту встречу?");
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
-            meetingService.delete(meeting);
-            loadMeetings();
-            showAlert("Успех", "Встреча успешно удалена");
+            try {
+                meetingService.delete(meeting);
+                loadMeetings();
+                showAlert("Успех", "Встреча успешно удалена");
+            } catch (Exception e) {
+                showAlert("Ошибка", "Ошибка при удалении встречи.");
+            }
         }
     }
 

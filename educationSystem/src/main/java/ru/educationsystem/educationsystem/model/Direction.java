@@ -41,12 +41,12 @@ public class Direction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Direction direction = (Direction) o;
-        return Objects.equals(id, direction.id) && Objects.equals(name, direction.name);
+        return id != null && Objects.equals(id, direction.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return getClass().hashCode();
     }
 
     @Override

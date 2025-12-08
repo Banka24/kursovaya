@@ -112,18 +112,12 @@ public class Mentee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Mentee mentee = (Mentee) o;
-        return Objects.equals(id, mentee.id) && 
-               Objects.equals(lastName, mentee.lastName) && 
-               Objects.equals(firstName, mentee.firstName) && 
-               Objects.equals(middleName, mentee.middleName) && 
-               Objects.equals(email, mentee.email) && 
-               Objects.equals(goals, mentee.goals) && 
-               Objects.equals(currentLevel, mentee.currentLevel);
+        return id != null && Objects.equals(id, mentee.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, lastName, firstName, middleName, email, goals, currentLevel);
+        return getClass().hashCode();
     }
 
     @Override

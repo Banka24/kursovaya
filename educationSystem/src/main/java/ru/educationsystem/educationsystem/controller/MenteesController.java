@@ -12,7 +12,6 @@ import ru.educationsystem.educationsystem.repository.MenteeDao;
 import ru.educationsystem.educationsystem.service.MenteeService;
 
 import java.util.List;
-import java.util.Optional;
 
 public class MenteesController {
     private final MenteeService menteeService;
@@ -78,15 +77,19 @@ public class MenteesController {
     public void addMentee() {
         Dialog<Mentee> dialog = createMenteeDialog(null);
         dialog.showAndWait().ifPresent(mentee -> {
-            menteeService.createMentee(
-                    mentee.getLastName(),
-                    mentee.getFirstName(),
-                    mentee.getMiddleName(),
-                    mentee.getEmail(),
-                    mentee.getGoals(),
-                    mentee.getCurrentLevel()
-            );
-            refreshMentees();
+            try {
+                menteeService.createMentee(
+                        mentee.getLastName(),
+                        mentee.getFirstName(),
+                        mentee.getMiddleName(),
+                        mentee.getEmail(),
+                        mentee.getGoals(),
+                        mentee.getCurrentLevel()
+                );
+                refreshMentees();
+            } catch (Exception e) {
+                showAlert("Ошибка при добавлении подопечного. Возможно, email уже существует.");
+            }
         });
     }
 
@@ -100,8 +103,12 @@ public class MenteesController {
 
         Dialog<Mentee> dialog = createMenteeDialog(selectedMentee);
         dialog.showAndWait().ifPresent(mentee -> {
-            menteeService.updateMentee(mentee);
-            refreshMentees();
+            try {
+                menteeService.updateMentee(mentee);
+                refreshMentees();
+            } catch (Exception e) {
+                showAlert("Ошибка при редактировании подопечного.");
+            }
         });
     }
 
@@ -120,8 +127,12 @@ public class MenteesController {
                 selectedMentee.getLastName() + " " + selectedMentee.getFirstName() + "?");
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
-            menteeService.deleteMentee(selectedMentee);
-            refreshMentees();
+            try {
+                menteeService.deleteMentee(selectedMentee);
+                refreshMentees();
+            } catch (Exception e) {
+                showAlert("Невозможно удалить подопечного. Возможно, он участвует в активных парах.");
+            }
         }
     }
 
@@ -197,7 +208,7 @@ public class MenteesController {
         grid.add(emailField, 1, 3);
         grid.add(new Label("Цели:"), 0, 4);
         grid.add(goalsField, 1, 4);
-        grid.add(new Label("Текущий уровень (1-10):"), 0, 5);
+        grid.add(new Label("Текущий уровень (1-5):"), 0, 5);
         grid.add(currentLevelField, 1, 5);
 
         dialog.getDialogPane().setContent(grid);
@@ -205,26 +216,43 @@ public class MenteesController {
         // Конвертация результата
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
+                String lastName = lastNameField.getText().trim();
+                String firstName = firstNameField.getText().trim();
+                String email = emailField.getText().trim();
+                
+                if (lastName.isEmpty()) {
+                    showAlert("Введите фамилию");
+                    return null;
+                }
+                if (firstName.isEmpty()) {
+                    showAlert("Введите имя");
+                    return null;
+                }
+                if (email.isEmpty()) {
+                    showAlert("Введите email");
+                    return null;
+                }
+                
                 Mentee resultMentee = mentee != null ? mentee : new Mentee();
-                resultMentee.setLastName(lastNameField.getText());
-                resultMentee.setFirstName(firstNameField.getText());
-                resultMentee.setMiddleName(middleNameField.getText());
-                resultMentee.setEmail(emailField.getText());
-                resultMentee.setGoals(goalsField.getText());
+                resultMentee.setLastName(lastName);
+                resultMentee.setFirstName(firstName);
+                resultMentee.setMiddleName(middleNameField.getText().trim());
+                resultMentee.setEmail(email);
+                resultMentee.setGoals(goalsField.getText().trim());
 
                 try {
-                    String levelText = currentLevelField.getText();
+                    String levelText = currentLevelField.getText().trim();
                     if (!levelText.isEmpty()) {
                         short level = Short.parseShort(levelText);
-                        if (level >= 1 && level <= 10) {
+                        if (level >= 1 && level <= 5) {
                             resultMentee.setCurrentLevel(level);
                         } else {
-                            showAlert("Уровень должен быть в диапазоне от 1 до 10");
+                            showAlert("Уровень должен быть в диапазоне от 1 до 5");
                             return null;
                         }
                     }
                 } catch (NumberFormatException e) {
-                    showAlert("Некорректный формат уровня. Введите число от 1 до 10");
+                    showAlert("Некорректный формат уровня. Введите число от 1 до 5");
                     return null;
                 }
 

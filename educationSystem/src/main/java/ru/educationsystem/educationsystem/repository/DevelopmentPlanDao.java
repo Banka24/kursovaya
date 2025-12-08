@@ -19,22 +19,6 @@ public class DevelopmentPlanDao extends BaseDao<DevelopmentPlan> {
                 .list();
         return plans;
     }
-
-    public List<DevelopmentPlan> findActivePlans() {
-        Session session = getCurrentSession();
-        List<DevelopmentPlan> plans = session.createQuery(
-                "FROM DevelopmentPlan dp WHERE dp.completed = false", DevelopmentPlan.class)
-                .list();
-        return plans;
-    }
-
-    public List<DevelopmentPlan> findCompletedPlans() {
-        Session session = getCurrentSession();
-        List<DevelopmentPlan> plans = session.createQuery(
-                "FROM DevelopmentPlan dp WHERE dp.completed = true", DevelopmentPlan.class)
-                .list();
-        return plans;
-    }
     
     public List<DevelopmentPlan> findAllWithPair() {
         Session session = getCurrentSession();

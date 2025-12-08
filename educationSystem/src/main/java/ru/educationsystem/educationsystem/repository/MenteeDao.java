@@ -10,20 +10,11 @@ public class MenteeDao extends BaseDao<Mentee> {
         super(Mentee.class);
     }
 
-    // Дополнительные методы для работы с подопечными
+    // Найти подопечных без наставника
     public List<Mentee> findMenteesWithoutMentor() {
         Session session = getCurrentSession();
         List<Mentee> mentees = session.createQuery(
-                "FROM Mentee m WHERE m.pair IS NULL", Mentee.class)
-                .list();
-        return mentees;
-    }
-
-    public List<Mentee> findMenteesByDirection(int directionId) {
-        Session session = getCurrentSession();
-        List<Mentee> mentees = session.createQuery(
-                "FROM Mentee m WHERE m.direction.id = :directionId", Mentee.class)
-                .setParameter("directionId", directionId)
+                "FROM Mentee m WHERE m.pairs IS EMPTY", Mentee.class)
                 .list();
         return mentees;
     }

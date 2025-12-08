@@ -15,7 +15,6 @@ import ru.educationsystem.educationsystem.service.DirectionService;
 import ru.educationsystem.educationsystem.service.MentorService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DirectionsController {
     private final DirectionService directionService;
@@ -63,8 +62,12 @@ public class DirectionsController {
     public void addDirection() {
         Dialog<Direction> dialog = createDirectionDialog(null);
         dialog.showAndWait().ifPresent(direction -> {
-            directionService.createDirection(direction.getName());
-            refreshDirections();
+            try {
+                directionService.createDirection(direction.getName());
+                refreshDirections();
+            } catch (Exception e) {
+                showAlert("Ошибка при добавлении направления. Возможно, такое направление уже существует.");
+            }
         });
     }
 
@@ -78,8 +81,12 @@ public class DirectionsController {
 
         Dialog<Direction> dialog = createDirectionDialog(selectedDirection);
         dialog.showAndWait().ifPresent(direction -> {
-            directionService.updateDirection(direction);
-            refreshDirections();
+            try {
+                directionService.updateDirection(direction);
+                refreshDirections();
+            } catch (Exception e) {
+                showAlert("Ошибка при редактировании направления.");
+            }
         });
     }
 
@@ -92,10 +99,14 @@ public class DirectionsController {
         }
 
         // Проверка, есть ли наставники с этим направлением
-        List<Mentor> mentors = mentorService.findMentorsByDirection(selectedDirection.getId());
-        if (!mentors.isEmpty()) {
-            showAlert("Нельзя удалить направление, так как оно используется наставниками");
-            return;
+        try {
+            List<Mentor> mentors = mentorService.findMentorsByDirection(selectedDirection.getId());
+            if (!mentors.isEmpty()) {
+                showAlert("Нельзя удалить направление, так как оно используется наставниками");
+                return;
+            }
+        } catch (Exception e) {
+            // Продолжаем удаление
         }
 
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
@@ -104,8 +115,12 @@ public class DirectionsController {
         confirmation.setContentText("Вы уверены, что хотите удалить направление: " + selectedDirection.getName() + "?");
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
-            directionService.deleteDirection(selectedDirection);
-            refreshDirections();
+            try {
+                directionService.deleteDirection(selectedDirection);
+                refreshDirections();
+            } catch (Exception e) {
+                showAlert("Ошибка при удалении направления.");
+            }
         }
     }
 
@@ -165,8 +180,13 @@ public class DirectionsController {
         // Конвертация результата
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
+                String name = nameField.getText().trim();
+                if (name.isEmpty()) {
+                    showAlert("Введите название направления");
+                    return null;
+                }
                 Direction resultDirection = direction != null ? direction : new Direction();
-                resultDirection.setName(nameField.getText());
+                resultDirection.setName(name);
                 return resultDirection;
             }
             return null;

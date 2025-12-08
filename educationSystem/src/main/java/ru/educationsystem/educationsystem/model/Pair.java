@@ -104,16 +104,12 @@ public class Pair {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pair pair = (Pair) o;
-        return Objects.equals(id, pair.id) && 
-               Objects.equals(mentor, pair.mentor) && 
-               Objects.equals(mentee, pair.mentee) && 
-               Objects.equals(startDate, pair.startDate) && 
-               Objects.equals(status, pair.status);
+        return id != null && Objects.equals(id, pair.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, mentor, mentee, startDate, status);
+        return getClass().hashCode();
     }
 
     @Override

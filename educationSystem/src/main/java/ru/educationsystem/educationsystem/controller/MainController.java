@@ -3,58 +3,56 @@ package ru.educationsystem.educationsystem.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 
 public class MainController {
 
     @FXML
+    private StackPane contentArea;
+
+    @FXML
     public void openMentorsView() {
-        openView("mentors-view.fxml", "Наставники");
+        loadView("mentors-view.fxml");
     }
 
     @FXML
     public void openMenteesView() {
-        openView("mentees-view.fxml", "Подопечные");
+        loadView("mentees-view.fxml");
     }
 
     @FXML
     public void openDirectionsView() {
-        openView("directions-view.fxml", "Направления");
+        loadView("directions-view.fxml");
     }
 
     @FXML
     public void openPairsView() {
-        openView("pairs-view.fxml", "Управление парами");
+        loadView("pairs-view.fxml");
     }
 
     @FXML
     public void openDevelopmentPlansView() {
-        openView("development-plans-view.fxml", "Планы развития");
+        loadView("development-plans-view.fxml");
     }
 
     @FXML
     public void openMeetingsView() {
-        openView("meetings-view.fxml", "Журнал встреч");
+        loadView("meetings-view.fxml");
     }
 
     @FXML
     public void openReportsView() {
-        openView("reports-view.fxml", "Генерация отчетов");
+        loadView("reports-view.fxml");
     }
 
-    private void openView(String fxmlFile, String title) {
+    private void loadView(String fxmlFile) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ru/educationsystem/educationsystem/" + fxmlFile));
             Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle(title);
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(root);
         } catch (IOException e) {
             e.printStackTrace();
         }

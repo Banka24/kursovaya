@@ -11,10 +11,8 @@ import javafx.stage.Stage;
 import ru.educationsystem.educationsystem.model.DevelopmentPlan;
 import ru.educationsystem.educationsystem.model.Pair;
 import ru.educationsystem.educationsystem.repository.DevelopmentPlanDao;
-import ru.educationsystem.educationsystem.repository.MenteeDao;
 import ru.educationsystem.educationsystem.repository.PairDao;
 import ru.educationsystem.educationsystem.service.DevelopmentPlanService;
-import ru.educationsystem.educationsystem.service.MenteeService;
 import ru.educationsystem.educationsystem.service.PairService;
 
 import java.time.LocalDate;
@@ -23,7 +21,6 @@ import java.util.List;
 public class DevelopmentPlansController {
     private final DevelopmentPlanService developmentPlanService;
     private final PairService pairService;
-    private final MenteeService menteeService;
     private final ObservableList<DevelopmentPlan> developmentPlansObservableList = FXCollections.observableArrayList();
 
     @FXML
@@ -47,10 +44,12 @@ public class DevelopmentPlansController {
     @FXML
     private TextField searchField;
 
+    @FXML
+    private ComboBox<Pair> pairComboBox;
+
     public DevelopmentPlansController() {
         this.developmentPlanService = new DevelopmentPlanService(new DevelopmentPlanDao());
         this.pairService = new PairService(new PairDao());
-        this.menteeService = new MenteeService(new MenteeDao());
     }
 
     @FXML
@@ -75,6 +74,21 @@ public class DevelopmentPlansController {
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         deadlineColumn.setCellValueFactory(new PropertyValueFactory<>("deadline"));
 
+        // Инициализация ComboBox для пар
+        List<Pair> pairs = pairService.getAllPairsWithMentorAndMentee();
+        pairComboBox.setItems(FXCollections.observableArrayList(pairs));
+        pairComboBox.setConverter(new javafx.util.StringConverter<Pair>() {
+            @Override
+            public String toString(Pair pair) {
+                if (pair == null) return "";
+                return pair.getMentor().getLastName() + " - " + pair.getMentee().getLastName();
+            }
+            @Override
+            public Pair fromString(String string) {
+                return null;
+            }
+        });
+
         refreshDevelopmentPlans();
     }
 
@@ -82,13 +96,17 @@ public class DevelopmentPlansController {
     public void addDevelopmentPlan() {
         Dialog<DevelopmentPlan> dialog = createDevelopmentPlanDialog(null);
         dialog.showAndWait().ifPresent(plan -> {
-            developmentPlanService.createDevelopmentPlan(
-                    plan.getPair(),
-                    plan.getTitle(),
-                    plan.getDescription(),
-                    plan.getDeadline()
-            );
-            refreshDevelopmentPlans();
+            try {
+                developmentPlanService.createDevelopmentPlan(
+                        plan.getPair(),
+                        plan.getTitle(),
+                        plan.getDescription(),
+                        plan.getDeadline()
+                );
+                refreshDevelopmentPlans();
+            } catch (Exception e) {
+                showAlert("Ошибка при добавлении плана развития.");
+            }
         });
     }
 
@@ -102,8 +120,12 @@ public class DevelopmentPlansController {
 
         Dialog<DevelopmentPlan> dialog = createDevelopmentPlanDialog(selectedPlan);
         dialog.showAndWait().ifPresent(plan -> {
-            developmentPlanService.updateDevelopmentPlan(plan);
-            refreshDevelopmentPlans();
+            try {
+                developmentPlanService.updateDevelopmentPlan(plan);
+                refreshDevelopmentPlans();
+            } catch (Exception e) {
+                showAlert("Ошибка при редактировании плана развития.");
+            }
         });
     }
 
@@ -121,8 +143,12 @@ public class DevelopmentPlansController {
         confirmation.setContentText("Вы уверены, что хотите удалить выбранный план развития?");
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
-            developmentPlanService.deleteDevelopmentPlan(selectedPlan);
-            refreshDevelopmentPlans();
+            try {
+                developmentPlanService.deleteDevelopmentPlan(selectedPlan);
+                refreshDevelopmentPlans();
+            } catch (Exception e) {
+                showAlert("Ошибка при удалении плана развития.");
+            }
         }
     }
 
@@ -182,7 +208,8 @@ public class DevelopmentPlansController {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         ComboBox<Pair> pairComboBox = new ComboBox<>();
-        pairComboBox.setItems(FXCollections.observableArrayList(pairService.getAllPairsWithMentorAndMentee()));
+        List<Pair> pairsList = pairService.getAllPairsWithMentorAndMentee();
+        pairComboBox.setItems(FXCollections.observableArrayList(pairsList));
         pairComboBox.setConverter(new javafx.util.StringConverter<Pair>() {
             @Override
             public String toString(Pair pair) {
@@ -200,7 +227,13 @@ public class DevelopmentPlansController {
         DatePicker endDatePicker = new DatePicker();
 
         if (plan != null) {
-            pairComboBox.setValue(plan.getPair());
+            // Находим соответствующую пару по ID
+            Integer pairId = plan.getPair().getId();
+            pairsList.stream()
+                    .filter(p -> p.getId().equals(pairId))
+                    .findFirst()
+                    .ifPresent(pairComboBox::setValue);
+            
             titleField.setText(plan.getTitle());
             descriptionField.setText(plan.getDescription());
             endDatePicker.setValue(plan.getDeadline());

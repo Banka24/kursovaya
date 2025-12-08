@@ -81,15 +81,19 @@ public class MentorsController {
     public void addMentor() {
         Dialog<Mentor> dialog = createMentorDialog(null);
         dialog.showAndWait().ifPresent(mentor -> {
-            mentorService.createMentor(
-                    mentor.getLastName(),
-                    mentor.getFirstName(),
-                    mentor.getMiddleName(),
-                    mentor.getEmail(),
-                    mentor.getSpecialization(),
-                    mentor.getAvailable()
-            );
-            refreshMentors();
+            try {
+                mentorService.createMentor(
+                        mentor.getLastName(),
+                        mentor.getFirstName(),
+                        mentor.getMiddleName(),
+                        mentor.getEmail(),
+                        mentor.getSpecialization(),
+                        mentor.getAvailable()
+                );
+                refreshMentors();
+            } catch (Exception e) {
+                showAlert("Ошибка при добавлении наставника. Возможно, email уже существует.");
+            }
         });
     }
 
@@ -103,8 +107,12 @@ public class MentorsController {
 
         Dialog<Mentor> dialog = createMentorDialog(selectedMentor);
         dialog.showAndWait().ifPresent(mentor -> {
-            mentorService.updateMentor(mentor);
-            refreshMentors();
+            try {
+                mentorService.updateMentor(mentor);
+                refreshMentors();
+            } catch (Exception e) {
+                showAlert("Ошибка при редактировании наставника.");
+            }
         });
     }
 
@@ -123,8 +131,12 @@ public class MentorsController {
                 selectedMentor.getLastName() + " " + selectedMentor.getFirstName() + "?");
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
-            mentorService.deleteMentor(selectedMentor);
-            refreshMentors();
+            try {
+                mentorService.deleteMentor(selectedMentor);
+                refreshMentors();
+            } catch (Exception e) {
+                showAlert("Невозможно удалить наставника. Возможно, он участвует в активных парах.");
+            }
         }
     }
 
@@ -208,12 +220,29 @@ public class MentorsController {
         // Конвертация результата
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
+                String lastName = lastNameField.getText().trim();
+                String firstName = firstNameField.getText().trim();
+                String email = emailField.getText().trim();
+                
+                if (lastName.isEmpty()) {
+                    showAlert("Введите фамилию");
+                    return null;
+                }
+                if (firstName.isEmpty()) {
+                    showAlert("Введите имя");
+                    return null;
+                }
+                if (email.isEmpty()) {
+                    showAlert("Введите email");
+                    return null;
+                }
+                
                 Mentor resultMentor = mentor != null ? mentor : new Mentor();
-                resultMentor.setLastName(lastNameField.getText());
-                resultMentor.setFirstName(firstNameField.getText());
-                resultMentor.setMiddleName(middleNameField.getText());
-                resultMentor.setEmail(emailField.getText());
-                resultMentor.setSpecialization(specializationField.getText());
+                resultMentor.setLastName(lastName);
+                resultMentor.setFirstName(firstName);
+                resultMentor.setMiddleName(middleNameField.getText().trim());
+                resultMentor.setEmail(email);
+                resultMentor.setSpecialization(specializationField.getText().trim());
                 resultMentor.setAvailable(availableCheckBox.isSelected());
                 return resultMentor;
             }

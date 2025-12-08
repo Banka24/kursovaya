@@ -4,37 +4,52 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox spacing="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.educationsystem.educationsystem.controller.DevelopmentPlansController">
-    <children>
-        <Label text="Планы развития" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-
-        <HBox spacing="10.0">
-            <children>
-                <ComboBox fx:id="pairComboBox" promptText="Выберите пару" prefWidth="200.0" />
-                <Button text="Создать план" onAction="#addDevelopmentPlan" />
-            </children>
-        </HBox>
-
-        <TableView fx:id="developmentPlansTable" prefHeight="400.0" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="idColumn" text="ID" prefWidth="50.0" />
-                <TableColumn fx:id="pairColumn" text="Пара" prefWidth="250.0" />
-                <TableColumn fx:id="titleColumn" text="Название" prefWidth="200.0" />
-                <TableColumn fx:id="descriptionColumn" text="Описание" prefWidth="250.0" />
-                <TableColumn fx:id="deadlineColumn" text="Срок" prefWidth="120.0" />
-            </columns>
-        </TableView>
-
-        <HBox spacing="10.0" alignment="CENTER_RIGHT">
-            <children>
-                <Button text="Редактировать" onAction="#editDevelopmentPlan" />
-                <Button text="Удалить" onAction="#deleteDevelopmentPlan" />
-                <Button text="Обновить" onAction="#refreshDevelopmentPlans" />
-                <Button text="Закрыть" onAction="#closeWindow" />
-            </children>
-        </HBox>
-    </children>
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ru.educationsystem.educationsystem.controller.DevelopmentPlansController"
+      style="-fx-background-color: #f5f5f5;">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
+    <Label text="Планы развития"
+           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+
+    <HBox spacing="15.0" alignment="CENTER_LEFT"
+          style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8;">
+        <VBox spacing="5">
+            <Label text="Пара:" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+            <ComboBox fx:id="pairComboBox" promptText="Выберите пару" prefWidth="250.0"
+                      style="-fx-background-radius: 5;"/>
+        </VBox>
+        <Button text="Создать план" onAction="#addDevelopmentPlan"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;"
+                prefHeight="35"/>
+    </HBox>
+
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <Label text="Поиск:" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="searchField" prefWidth="300.0" promptText="Введите текст для поиска..."
+                   style="-fx-background-radius: 5;"/>
+        <Button text="Найти" onAction="#searchDevelopmentPlans"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"/>
+    </HBox>
+
+    <TableView fx:id="developmentPlansTable" prefHeight="350.0" VBox.vgrow="ALWAYS"
+               style="-fx-background-radius: 8; -fx-border-radius: 8;">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50.0" visible="false"/>
+            <TableColumn fx:id="pairColumn" text="Пара" prefWidth="220.0"/>
+            <TableColumn fx:id="titleColumn" text="Название" prefWidth="200.0"/>
+            <TableColumn fx:id="descriptionColumn" text="Описание" prefWidth="250.0"/>
+            <TableColumn fx:id="deadlineColumn" text="Срок" prefWidth="120.0"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10.0" alignment="CENTER_RIGHT">
+        <Button text="Редактировать" onAction="#editDevelopmentPlan"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"/>
+        <Button text="Удалить" onAction="#deleteDevelopmentPlan"
+                style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"/>
+        <Button text="Обновить" onAction="#refreshDevelopmentPlans"
+                style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"/>
+    </HBox>
 </VBox>

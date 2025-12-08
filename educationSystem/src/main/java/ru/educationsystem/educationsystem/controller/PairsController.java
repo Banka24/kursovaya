@@ -48,6 +48,12 @@ public class PairsController {
     @FXML
     private TextField searchField;
 
+    @FXML
+    private ComboBox<Mentor> mentorComboBox;
+
+    @FXML
+    private ComboBox<Mentee> menteeComboBox;
+
     public PairsController() {
         this.pairService = new PairService(new PairDao());
         this.mentorService = new MentorService(new MentorDao());
@@ -82,21 +88,70 @@ public class PairsController {
         startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
+        // Инициализация ComboBox для наставников
+        List<Mentor> mentors = mentorService.getAllMentors();
+        mentorComboBox.setItems(FXCollections.observableArrayList(mentors));
+        mentorComboBox.setConverter(new javafx.util.StringConverter<Mentor>() {
+            @Override
+            public String toString(Mentor mentor) {
+                return mentor == null ? "" : mentor.getLastName() + " " + mentor.getFirstName();
+            }
+            @Override
+            public Mentor fromString(String string) {
+                return null;
+            }
+        });
+
+        // Инициализация ComboBox для подопечных
+        List<Mentee> mentees = menteeService.getAllMentees();
+        menteeComboBox.setItems(FXCollections.observableArrayList(mentees));
+        menteeComboBox.setConverter(new javafx.util.StringConverter<Mentee>() {
+            @Override
+            public String toString(Mentee mentee) {
+                return mentee == null ? "" : mentee.getLastName() + " " + mentee.getFirstName();
+            }
+            @Override
+            public Mentee fromString(String string) {
+                return null;
+            }
+        });
+
         // Загрузка данных
         refreshPairs();
     }
 
     @FXML
     public void addPair() {
-        Dialog<Pair> dialog = createPairDialog(null);
-        dialog.showAndWait().ifPresent(pair -> {
-            pairService.createPair(
-                    pair.getMentor(),
-                    pair.getMentee(),
-                    pair.getStatus()
-            );
-            refreshPairs();
-        });
+        // Проверяем выбор из ComboBox на форме
+        Mentor selectedMentor = mentorComboBox.getValue();
+        Mentee selectedMentee = menteeComboBox.getValue();
+        
+        if (selectedMentor != null && selectedMentee != null) {
+            // Если выбраны оба - создаем пару сразу
+            try {
+                pairService.createPair(selectedMentor, selectedMentee, "active");
+                refreshPairs();
+                mentorComboBox.setValue(null);
+                menteeComboBox.setValue(null);
+            } catch (Exception e) {
+                showAlert("Ошибка при добавлении пары. Возможно, такая пара уже существует.");
+            }
+        } else {
+            // Иначе открываем диалог
+            Dialog<Pair> dialog = createPairDialog(null);
+            dialog.showAndWait().ifPresent(pair -> {
+                try {
+                    pairService.createPair(
+                            pair.getMentor(),
+                            pair.getMentee(),
+                            pair.getStatus()
+                    );
+                    refreshPairs();
+                } catch (Exception e) {
+                    showAlert("Ошибка при добавлении пары. Возможно, такая пара уже существует.");
+                }
+            });
+        }
     }
 
     @FXML
@@ -109,8 +164,12 @@ public class PairsController {
 
         Dialog<Pair> dialog = createPairDialog(selectedPair);
         dialog.showAndWait().ifPresent(pair -> {
-            pairService.updatePair(pair);
-            refreshPairs();
+            try {
+                pairService.updatePair(pair);
+                refreshPairs();
+            } catch (Exception e) {
+                showAlert("Ошибка при редактировании пары.");
+            }
         });
     }
 
@@ -128,8 +187,12 @@ public class PairsController {
         confirmation.setContentText("Вы уверены, что хотите удалить выбранную пару?");
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
-            pairService.deletePair(selectedPair);
-            refreshPairs();
+            try {
+                pairService.deletePair(selectedPair);
+                refreshPairs();
+            } catch (Exception e) {
+                showAlert("Невозможно удалить пару. Возможно, существуют связанные встречи или планы развития.");
+            }
         }
     }
 
@@ -185,7 +248,8 @@ public class PairsController {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         ComboBox<Mentor> mentorComboBox = new ComboBox<>();
-        mentorComboBox.setItems(FXCollections.observableArrayList(mentorService.getAllMentors()));
+        List<Mentor> mentorsList = mentorService.getAllMentors();
+        mentorComboBox.setItems(FXCollections.observableArrayList(mentorsList));
         mentorComboBox.setConverter(new javafx.util.StringConverter<Mentor>() {
             @Override
             public String toString(Mentor mentor) {
@@ -198,7 +262,8 @@ public class PairsController {
         });
 
         ComboBox<Mentee> menteeComboBox = new ComboBox<>();
-        menteeComboBox.setItems(FXCollections.observableArrayList(menteeService.getAllMentees()));
+        List<Mentee> menteesList = menteeService.getAllMentees();
+        menteeComboBox.setItems(FXCollections.observableArrayList(menteesList));
         menteeComboBox.setConverter(new javafx.util.StringConverter<Mentee>() {
             @Override
             public String toString(Mentee mentee) {
@@ -215,8 +280,20 @@ public class PairsController {
         statusComboBox.setItems(FXCollections.observableArrayList("active", "paused", "completed"));
 
         if (pair != null) {
-            mentorComboBox.setValue(pair.getMentor());
-            menteeComboBox.setValue(pair.getMentee());
+            // Находим соответствующие элементы по ID
+            Integer mentorId = pair.getMentor().getId();
+            Integer menteeId = pair.getMentee().getId();
+            
+            mentorsList.stream()
+                    .filter(m -> m.getId().equals(mentorId))
+                    .findFirst()
+                    .ifPresent(mentorComboBox::setValue);
+            
+            menteesList.stream()
+                    .filter(m -> m.getId().equals(menteeId))
+                    .findFirst()
+                    .ifPresent(menteeComboBox::setValue);
+            
             startDatePicker.setValue(pair.getStartDate());
             statusComboBox.setValue(pair.getStatus());
         } else {

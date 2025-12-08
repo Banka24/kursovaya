@@ -32,7 +32,7 @@ public class PairDao extends BaseDao<Pair> {
     public List<Pair> findActivePairs() {
         Session session = getCurrentSession();
         List<Pair> pairs = session.createQuery(
-                "FROM Pair p WHERE p.active = true", Pair.class)
+                "FROM Pair p WHERE p.status = 'active'", Pair.class)
                 .list();
         return pairs;
     }

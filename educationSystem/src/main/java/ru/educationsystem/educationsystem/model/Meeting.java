@@ -99,18 +99,12 @@ public class Meeting {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Meeting meeting = (Meeting) o;
-        return Objects.equals(id, meeting.id) && 
-               Objects.equals(pair, meeting.pair) && 
-               Objects.equals(datetime, meeting.datetime) && 
-               Objects.equals(topic, meeting.topic) && 
-               Objects.equals(tasksDone, meeting.tasksDone) && 
-               Objects.equals(mentorRating, meeting.mentorRating) && 
-               Objects.equals(menteeRating, meeting.menteeRating);
+        return id != null && Objects.equals(id, meeting.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, pair, datetime, topic, tasksDone, mentorRating, menteeRating);
+        return getClass().hashCode();
     }
 
     @Override

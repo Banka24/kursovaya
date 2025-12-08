@@ -4,37 +4,47 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox spacing="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.educationsystem.educationsystem.controller.ReportsController">
-    <children>
-        <Label text="Генерация отчетов" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-
-        <GridPane hgap="10.0" vgap="10.0">
-            <children>
-                <Label text="Тип отчета:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                <ComboBox fx:id="reportTypeComboBox" prefWidth="200.0" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-
-                <Label text="Период с:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                <DatePicker fx:id="startDatePicker" prefWidth="200.0" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-
-                <Label text="Период по:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                <DatePicker fx:id="endDatePicker" prefWidth="200.0" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-
-                <Label text="Направление:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                <ComboBox fx:id="directionComboBox" prefWidth="200.0" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-            </children>
-        </GridPane>
-
-        <TextArea fx:id="reportPreviewArea" prefHeight="200.0" editable="false" />
-
-        <HBox spacing="10.0" alignment="CENTER_RIGHT">
-            <children>
-                <Button text="Сформировать отчет" onAction="#generateReport" />
-                <Button text="Экспорт в PDF" onAction="#exportToPdf" />
-                <Button text="Закрыть" onAction="#closeWindow" />
-            </children>
-        </HBox>
-    </children>
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ru.educationsystem.educationsystem.controller.ReportsController"
+      style="-fx-background-color: #f5f5f5;">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
     </padding>
+    <Label text="Генерация отчетов" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+
+    <VBox spacing="10.0" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8;">
+        <GridPane hgap="15.0" vgap="15.0">
+            <Label text="Тип отчета:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+            <ComboBox fx:id="reportTypeComboBox" prefWidth="220.0" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                      style="-fx-background-radius: 5;"/>
+
+            <Label text="Период с:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+            <DatePicker fx:id="startDatePicker" prefWidth="220.0" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                        style="-fx-background-radius: 5;"/>
+
+            <Label text="Период по:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+            <DatePicker fx:id="endDatePicker" prefWidth="220.0" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                        style="-fx-background-radius: 5;"/>
+
+            <Label text="Направление:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+            <ComboBox fx:id="directionComboBox" prefWidth="220.0" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                      style="-fx-background-radius: 5;"/>
+        </GridPane>
+    </VBox>
+
+    <Label text="Предпросмотр отчета:" style="-fx-font-weight: bold; -fx-text-fill: #555; -fx-font-size: 14px;"/>
+    <TextArea fx:id="reportPreviewArea" prefHeight="200.0" editable="false" VBox.vgrow="ALWAYS"
+              style="-fx-background-radius: 8; -fx-font-family: monospace;"/>
+
+    <HBox spacing="10.0" alignment="CENTER_RIGHT"
+          style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8;">
+        <Button text="Сформировать отчет" onAction="#generateReport"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand; -fx-font-weight: bold;"/>
+        <Button text="Экспорт в PDF" onAction="#exportToPdf"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"/>
+    </HBox>
 </VBox>

@@ -15,7 +15,7 @@ public class MeetingDao extends BaseDao<Meeting> {
     public List<Meeting> findMeetingsByPair(long pairId) {
         Session session = getCurrentSession();
         List<Meeting> meetings = session.createQuery(
-                "FROM Meeting m WHERE m.pair.id = :pairId ORDER BY m.date", Meeting.class)
+                "FROM Meeting m WHERE m.pair.id = :pairId ORDER BY m.datetime", Meeting.class)
                 .setParameter("pairId", pairId)
                 .list();
         return meetings;
@@ -24,7 +24,7 @@ public class MeetingDao extends BaseDao<Meeting> {
     public List<Meeting> findMeetingsByDateRange(Date startDate, Date endDate) {
         Session session = getCurrentSession();
         List<Meeting> meetings = session.createQuery(
-                "FROM Meeting m WHERE m.date BETWEEN :startDate AND :endDate", Meeting.class)
+                "FROM Meeting m WHERE m.datetime BETWEEN :startDate AND :endDate", Meeting.class)
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
                 .list();
@@ -34,7 +34,7 @@ public class MeetingDao extends BaseDao<Meeting> {
     public List<Meeting> findUpcomingMeetings() {
         Session session = getCurrentSession();
         List<Meeting> meetings = session.createQuery(
-                "FROM Meeting m WHERE m.date >= CURRENT_DATE", Meeting.class)
+                "FROM Meeting m WHERE m.datetime >= CURRENT_DATE", Meeting.class)
                 .list();
         return meetings;
     }
@@ -42,7 +42,7 @@ public class MeetingDao extends BaseDao<Meeting> {
     public List<Meeting> findPastMeetings() {
         Session session = getCurrentSession();
         List<Meeting> meetings = session.createQuery(
-                "FROM Meeting m WHERE m.date < CURRENT_DATE", Meeting.class)
+                "FROM Meeting m WHERE m.datetime < CURRENT_DATE", Meeting.class)
                 .list();
         return meetings;
     }

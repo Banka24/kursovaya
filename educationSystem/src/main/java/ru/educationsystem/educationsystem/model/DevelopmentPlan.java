@@ -77,16 +77,12 @@ public class DevelopmentPlan {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DevelopmentPlan that = (DevelopmentPlan) o;
-        return Objects.equals(id, that.id) && 
-               Objects.equals(pair, that.pair) && 
-               Objects.equals(title, that.title) && 
-               Objects.equals(description, that.description) && 
-               Objects.equals(deadline, that.deadline);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, pair, title, description, deadline);
+        return getClass().hashCode();
     }
 
     @Override

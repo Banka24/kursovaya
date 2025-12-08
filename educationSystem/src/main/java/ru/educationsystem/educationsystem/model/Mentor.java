@@ -128,18 +128,12 @@ public class Mentor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Mentor mentor = (Mentor) o;
-        return Objects.equals(id, mentor.id) && 
-               Objects.equals(lastName, mentor.lastName) && 
-               Objects.equals(firstName, mentor.firstName) && 
-               Objects.equals(middleName, mentor.middleName) && 
-               Objects.equals(email, mentor.email) && 
-               Objects.equals(specialization, mentor.specialization) && 
-               Objects.equals(available, mentor.available);
+        return id != null && Objects.equals(id, mentor.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, lastName, firstName, middleName, email, specialization, available);
+        return getClass().hashCode();
     }
 
     @Override

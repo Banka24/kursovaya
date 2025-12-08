@@ -4,65 +4,73 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.educationsystem.educationsystem.controller.MainController">
-    <children>
-        <Label text="Система наставничества" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.educationsystem.educationsystem.controller.MainController"
+            style="-fx-background-color: #5a6fd6;">
+    <top>
+        <VBox spacing="10.0">
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="15.0" />
+            </padding>
+            <VBox alignment="CENTER" spacing="5.0">
+                <Label text="Система наставничества" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                <Label text="Управление наставниками, подопечными и их взаимодействием" style="-fx-font-size: 14px; -fx-text-fill: #e0e0e0;" />
+            </VBox>
 
-        <MenuBar>
-            <menus>
+            <MenuBar style="-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 5;">
                 <Menu text="Участники">
-                    <items>
-                        <MenuItem onAction="#openMentorsView" text="Наставники" />
-                        <MenuItem onAction="#openMenteesView" text="Подопечные" />
-                    </items>
+                    <MenuItem onAction="#openMentorsView" text="Наставники"/>
+                    <MenuItem onAction="#openMenteesView" text="Подопечные"/>
                 </Menu>
                 <Menu text="Направления">
-                    <items>
-                        <MenuItem onAction="#openDirectionsView" text="Справочник направлений" />
-                    </items>
+                    <MenuItem onAction="#openDirectionsView" text="Справочник направлений"/>
                 </Menu>
                 <Menu text="Пары">
-                    <items>
-                        <MenuItem onAction="#openPairsView" text="Управление парами" />
-                    </items>
+                    <MenuItem onAction="#openPairsView" text="Управление парами"/>
                 </Menu>
                 <Menu text="Планы развития">
-                    <items>
-                        <MenuItem onAction="#openDevelopmentPlansView" text="Планы развития" />
-                    </items>
+                    <MenuItem onAction="#openDevelopmentPlansView" text="Планы развития"/>
                 </Menu>
                 <Menu text="Встречи">
-                    <items>
-                        <MenuItem onAction="#openMeetingsView" text="Журнал встреч" />
-                    </items>
+                    <MenuItem onAction="#openMeetingsView" text="Журнал встреч"/>
                 </Menu>
                 <Menu text="Отчеты">
-                    <items>
-                        <MenuItem onAction="#openReportsView" text="Генерация отчетов" />
-                    </items>
+                    <MenuItem onAction="#openReportsView" text="Генерация отчетов"/>
                 </Menu>
-            </menus>
-        </MenuBar>
+            </MenuBar>
+        </VBox>
+    </top>
+    <center>
+        <StackPane fx:id="contentArea">
+            <VBox spacing="15.0" alignment="CENTER" style="-fx-background-color: rgba(255,255,255,0.95); -fx-padding: 25; -fx-background-radius: 12;">
+                <padding>
+                    <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                </padding>
+                <Label text="Быстрый доступ" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+                <HBox spacing="15.0" alignment="CENTER">
+                    <Button text="Наставники" onAction="#openMentorsView" prefWidth="140.0" prefHeight="45.0"
+                            style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button text="Подопечные" onAction="#openMenteesView" prefWidth="140.0" prefHeight="45.0"
+                            style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button text="Пары" onAction="#openPairsView" prefWidth="140.0" prefHeight="45.0"
+                            style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                </HBox>
 
-        <HBox spacing="10.0" alignment="CENTER">
-            <children>
-                <Button text="Наставники" onAction="#openMentorsView" prefWidth="120.0" />
-                <Button text="Подопечные" onAction="#openMenteesView" prefWidth="120.0" />
-                <Button text="Пары" onAction="#openPairsView" prefWidth="120.0" />
-            </children>
-        </HBox>
+                <HBox spacing="15.0" alignment="CENTER">
+                    <Button text="Направления" onAction="#openDirectionsView" prefWidth="140.0" prefHeight="45.0"
+                            style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button text="Планы" onAction="#openDevelopmentPlansView" prefWidth="140.0" prefHeight="45.0"
+                            style="-fx-background-color: #00BCD4; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button text="Встречи" onAction="#openMeetingsView" prefWidth="140.0" prefHeight="45.0"
+                            style="-fx-background-color: #E91E63; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                </HBox>
 
-        <HBox spacing="10.0" alignment="CENTER">
-            <children>
-                <Button text="Направления" onAction="#openDirectionsView" prefWidth="120.0" />
-                <Button text="Планы развития" onAction="#openDevelopmentPlansView" prefWidth="120.0" />
-                <Button text="Встречи" onAction="#openMeetingsView" prefWidth="120.0" />
-            </children>
-        </HBox>
-
-        <Button text="Отчеты" onAction="#openReportsView" prefWidth="120.0" />
-    </children>
+                <Button text="Отчеты" onAction="#openReportsView" prefWidth="200.0" prefHeight="45.0"
+                        style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+            </VBox>
+        </StackPane>
+    </center>
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="20.0" left="20.0" right="20.0"/>
     </padding>
-</VBox>
+</BorderPane>
