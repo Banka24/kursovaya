@@ -1,32 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version = "1.0" encoding = "utf-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC
         "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
-
 <hibernate-configuration>
     <session-factory>
-        <!-- Database connection settings -->
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/education</property>
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">postgres</property>
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-
-        <!-- Hibernate settings -->
-        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.format_sql">true</property>
-
-        <property name="hibernate.current_session_context_class">thread</property>
-
-        <!-- Optional: schema management -->
-        <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
-        <!-- Mapped classes -->
-        <mapping class="ru.educationsystem.educationsystem.model.DevelopmentPlan"/>
-        <mapping class="ru.educationsystem.educationsystem.model.Direction"/>
-        <mapping class="ru.educationsystem.educationsystem.model.Meeting"/>
-        <mapping class="ru.educationsystem.educationsystem.model.Mentee"/>
-        <mapping class="ru.educationsystem.educationsystem.model.Mentor"/>
-        <mapping class="ru.educationsystem.educationsystem.model.MentorDirection"/>
-        <mapping class="ru.educationsystem.educationsystem.model.Pair"/>
+        <mapping class="ru.demo.demo2.model.Mentor" />
+        <mapping class="ru.demo.demo2.model.Mentee" />
+        <mapping class="ru.demo.demo2.model.Direction" />
+        <mapping class="ru.demo.demo2.model.Pair" />
+        <mapping class="ru.demo.demo2.model.DevelopmentPlan" />
+        <mapping class="ru.demo.demo2.model.Meeting" />
     </session-factory>
 </hibernate-configuration>

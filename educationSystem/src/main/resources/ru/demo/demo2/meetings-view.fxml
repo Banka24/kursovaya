@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ru.demo.demo2.controller.MeetingsController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Управление встречами"/>
+
+    <HBox spacing="10">
+        <Button onAction="#onAddClick" text="Добавить встречу"/>
+        <Button onAction="#onEditClick" text="Редактировать"/>
+        <Button onAction="#onDeleteClick" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Удалить"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button onAction="#onRefreshClick" text="Обновить"/>
+    </HBox>
+
+    <TableView fx:id="meetingsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" visible="false" prefWidth="50" text="ID"/>
+            <TableColumn fx:id="pairColumn" prefWidth="200" text="Пара"/>
+            <TableColumn fx:id="datetimeColumn" prefWidth="130" text="Дата и время"/>
+            <TableColumn fx:id="topicColumn" prefWidth="150" text="Тема"/>
+            <TableColumn fx:id="tasksColumn" prefWidth="150" text="Выполнено"/>
+            <TableColumn fx:id="mentorRatingColumn" text="Оц. наст."/>
+            <TableColumn fx:id="menteeRatingColumn" text="Оц. подоп."/>
+        </columns>
+    </TableView>
+</VBox>

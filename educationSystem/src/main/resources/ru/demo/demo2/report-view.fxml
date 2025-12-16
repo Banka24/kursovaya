@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ru.demo.demo2.controller.ReportController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Отчет: Эффективность наставничества"/>
+
+    <HBox spacing="10">
+        <Button onAction="#onRefreshClick" text="Обновить"/>
+    </HBox>
+
+    <Label fx:id="summaryLabel" style="-fx-font-size: 14px;"/>
+
+    <TableView fx:id="pairsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" visible="false" prefWidth="50" text="ID"/>
+            <TableColumn fx:id="mentorColumn" prefWidth="180" text="Наставник"/>
+            <TableColumn fx:id="menteeColumn" prefWidth="180" text="Подопечный"/>
+            <TableColumn fx:id="statusColumn" prefWidth="120" text="Статус"/>
+            <TableColumn fx:id="meetingsColumn" text="Встреч"/>
+            <TableColumn fx:id="plansColumn" text="Планов"/>
+            <TableColumn fx:id="avgRatingColumn" prefWidth="100" text="Ср. рейтинг"/>
+        </columns>
+    </TableView>
+</VBox>
