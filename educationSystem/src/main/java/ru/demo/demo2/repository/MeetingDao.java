@@ -5,7 +5,9 @@ import ru.demo.demo2.util.HibernateSession;
 import java.util.List;
 
 public class MeetingDao extends BaseDao<Meeting> {
-    public MeetingDao() { super(Meeting.class); }
+    public MeetingDao() {
+        super(Meeting.class);
+    }
 
     public List<Meeting> findByPairId(Integer pairId) {
         try (Session s = HibernateSession.getSessionFactory().openSession()) {

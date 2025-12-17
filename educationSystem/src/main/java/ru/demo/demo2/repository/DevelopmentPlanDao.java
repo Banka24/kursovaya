@@ -6,7 +6,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class DevelopmentPlanDao extends BaseDao<DevelopmentPlan> {
-    public DevelopmentPlanDao() { super(DevelopmentPlan.class); }
+    public DevelopmentPlanDao() {
+        super(DevelopmentPlan.class);
+    }
 
     public List<DevelopmentPlan> findByPairId(Integer pairId) {
         try (Session s = HibernateSession.getSessionFactory().openSession()) {

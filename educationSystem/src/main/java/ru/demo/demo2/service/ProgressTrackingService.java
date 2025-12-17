@@ -7,7 +7,6 @@ import java.util.*;
 public class ProgressTrackingService {
     private final MeetingDao meetingDao = new MeetingDao();
     private final DevelopmentPlanDao planDao = new DevelopmentPlanDao();
-    private PairDao pairDao = new PairDao();
 
     public List<Meeting> getMeetingsForPair(Integer pairId) {
         return meetingDao.findByPairId(pairId);
@@ -74,13 +73,5 @@ public class ProgressTrackingService {
 
     public int getPlansCount(Integer pairId) {
         return planDao.findByPairId(pairId).size();
-    }
-
-    public PairDao getPairDao() {
-        return pairDao;
-    }
-
-    public void setPairDao(PairDao pairDao) {
-        this.pairDao = pairDao;
     }
 }

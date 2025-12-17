@@ -6,8 +6,14 @@ import java.util.List;
 
 public abstract class BaseDao<T> {
     private final Class<T> clazz;
-    public BaseDao(Class<T> clazz) { this.clazz = clazz; }
-    protected Session getSession() { return HibernateSession.getSessionFactory().openSession(); }
+
+    public BaseDao(Class<T> clazz) {
+        this.clazz = clazz;
+    }
+
+    protected Session getSession() {
+        return HibernateSession.getSessionFactory().openSession();
+    }
     
     public void save(T entity) {
         Session s = getSession(); Transaction tx = s.beginTransaction();
@@ -26,10 +32,6 @@ public abstract class BaseDao<T> {
     public void update(T entity) {
         Session s = getSession(); Transaction tx = s.beginTransaction();
         s.merge(entity); tx.commit(); s.close();
-    }
-
-    public void deleteById(long id) {
-        delete(findById((int) id));
     }
 
     public List<T> findAll() {

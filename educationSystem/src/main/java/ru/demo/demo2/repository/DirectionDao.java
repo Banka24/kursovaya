@@ -5,7 +5,9 @@ import ru.demo.demo2.util.HibernateSession;
 import java.util.List;
 
 public class DirectionDao extends BaseDao<Direction> {
-    public DirectionDao() { super(Direction.class); }
+    public DirectionDao() {
+        super(Direction.class);
+    }
 
     public Direction findByName(String name) {
         try (Session s = HibernateSession.getSessionFactory().openSession()) {

@@ -28,15 +28,20 @@ public class DirectionsController {
     }
 
     @FXML
-    private void onAddClick() { showDialog(null); }
+    private void onAddClick() {
+        showDialog(null);
+    }
 
     @FXML
-    private void onEditClick() { Direction d = directionsTable.getSelectionModel().getSelectedItem(); if (d != null) showDialog(d); }
+    private void onEditClick() {
+        Direction d = directionsTable.getSelectionModel().getSelectedItem(); if (d != null) showDialog(d);
+    }
 
     @FXML
     private void onDeleteClick() {
         Direction d = directionsTable.getSelectionModel().getSelectedItem();
-        if (d != null && new Alert(Alert.AlertType.CONFIRMATION, "Удалить " + d.getName() + "?").showAndWait().get() == ButtonType.OK) {
+        if (d != null && new Alert(Alert.AlertType.CONFIRMATION, "Удалить " + d.getName() + "?")
+                .showAndWait().get() == ButtonType.OK) {
             directionDao.delete(d); load();
         }
     }

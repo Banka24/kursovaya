@@ -8,20 +8,9 @@ public class PairMatchingService {
     private final MentorDao mentorDao = new MentorDao();
     private final MenteeDao menteeDao = new MenteeDao();
     private final PairDao pairDao = new PairDao();
-    private DirectionDao directionDao = new DirectionDao();
 
     public List<Mentor> findAvailableMentors() {
         return mentorDao.findAvailable();
-    }
-
-    public List<Mentor> findMentorsByDirection(Direction direction) {
-        List<Mentor> result = new ArrayList<>();
-        for (Mentor m : mentorDao.findAll()) {
-            if (m.getAvailable() && m.getDirections().contains(direction)) {
-                result.add(m);
-            }
-        }
-        return result;
     }
 
     public void createPair(Mentor mentor, Mentee mentee) {
@@ -68,13 +57,5 @@ public class PairMatchingService {
             }
         }
         return result;
-    }
-
-    public DirectionDao getDirectionDao() {
-        return directionDao;
-    }
-
-    public void setDirectionDao(DirectionDao directionDao) {
-        this.directionDao = directionDao;
     }
 }
