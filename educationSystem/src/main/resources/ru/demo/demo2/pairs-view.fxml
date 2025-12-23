@@ -4,27 +4,29 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ru.demo.demo2.controller.PairsController">
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.demo.demo2.controller.PairsController">
     <padding>
         <Insets bottom="20" left="20" right="20" top="20"/>
     </padding>
 
-    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Управление парами наставник-подопечный"/>
+    <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 0 0 10 0;" text="Управление парами наставник-подопечный"/>
 
     <HBox spacing="10">
-        <Button onAction="#onAddClick" text="Создать пару"/>
-        <Button onAction="#onEditClick" text="Редактировать"/>
-        <Button onAction="#onDeleteClick" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Удалить"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button onAction="#onRefreshClick" text="Обновить"/>
+        <TextField fx:id="searchField" promptText="Поиск..." prefWidth="250" style="-fx-padding: 8px; -fx-font-size: 13px; -fx-border-color: #2196F3; -fx-border-width: 2px; -fx-border-radius: 4px; -fx-background-radius: 4px;"/>
     </HBox>
 
-    <Label fx:id="resultLabel" style="-fx-font-size: 12px;"/>
+    <HBox spacing="10">
+        <Button onAction="#onAddClick" text="Создать пару" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
+        <Button onAction="#onEditClick" text="Редактировать" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
+        <Button onAction="#onDeleteClick" text="Удалить" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
+        <Button onAction="#onRefreshClick" text="Обновить" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
+    </HBox>
 
-    <TableView fx:id="pairsTable" VBox.vgrow="ALWAYS">
+    <Label fx:id="resultLabel" style="-fx-font-size: 13px; -fx-text-fill: #555; -fx-font-weight: bold; -fx-padding: 5 0 5 0;"/>
+
+    <TableView fx:id="pairsTable" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-width: 1px; -fx-border-radius: 5px; -fx-background-radius: 5px;">
         <columns>
-            <TableColumn fx:id="idColumn" visible="false" prefWidth="50" text="ID"/>
+            <TableColumn fx:id="idColumn" prefWidth="50" visible="false" text="ID"/>
             <TableColumn fx:id="mentorColumn" prefWidth="200" text="Наставник"/>
             <TableColumn fx:id="menteeColumn" prefWidth="200" text="Подопечный"/>
             <TableColumn fx:id="startDateColumn" prefWidth="120" text="Дата начала"/>

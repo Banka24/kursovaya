@@ -6,7 +6,6 @@ import java.util.List;
 
 public abstract class BaseDao<T> {
     private final Class<T> clazz;
-
     public BaseDao(Class<T> clazz) {
         this.clazz = clazz;
     }

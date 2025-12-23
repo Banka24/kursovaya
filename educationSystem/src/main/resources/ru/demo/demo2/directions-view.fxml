@@ -4,26 +4,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ru.demo.demo2.controller.DirectionsController">
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.demo.demo2.controller.DirectionsController">
     <padding>
         <Insets bottom="20" left="20" right="20" top="20"/>
     </padding>
 
-    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Управление направлениями"/>
+    <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 0 0 10 0;" text="Управление направлениями"/>
 
     <HBox spacing="10">
-        <Button onAction="#onAddClick" text="Добавить"/>
-        <Button onAction="#onEditClick" text="Редактировать"/>
-        <Button onAction="#onDeleteClick" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Удалить"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button onAction="#onRefreshClick" text="Обновить"/>
+        <TextField fx:id="searchField" promptText="Поиск..." prefWidth="250" style="-fx-padding: 8px; -fx-font-size: 13px; -fx-border-color: #2196F3; -fx-border-width: 2px; -fx-border-radius: 4px; -fx-background-radius: 4px;"/>
     </HBox>
 
-    <TableView fx:id="directionsTable" VBox.vgrow="ALWAYS">
+    <HBox spacing="10">
+        <Button onAction="#onAddClick" text="Добавить" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
+        <Button onAction="#onEditClick" text="Редактировать" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
+        <Button onAction="#onDeleteClick" text="Удалить" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
+        <Button onAction="#onRefreshClick" text="Обновить" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
+    </HBox>
+
+    <TableView fx:id="directionsTable" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-width: 1px; -fx-border-radius: 5px; -fx-background-radius: 5px;">
         <columns>
-            <TableColumn fx:id="idColumn" visible="false" prefWidth="100" text="ID"/>
+            <TableColumn fx:id="idColumn" prefWidth="100" visible="false" text="ID"/>
             <TableColumn fx:id="nameColumn" prefWidth="400" text="Название"/>
         </columns>
     </TableView>
+    
+    <Label fx:id="statusLabel" style="-fx-font-size: 13px; -fx-text-fill: #555; -fx-font-weight: bold; -fx-padding: 5 0 0 0;"/>
 </VBox>

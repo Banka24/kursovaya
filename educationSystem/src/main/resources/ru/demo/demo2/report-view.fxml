@@ -4,28 +4,28 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ru.demo.demo2.controller.ReportController">
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.demo.demo2.controller.ReportController">
     <padding>
         <Insets bottom="20" left="20" right="20" top="20"/>
     </padding>
 
-    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Отчет: Эффективность наставничества"/>
+    <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 0 0 10 0;" text="Отчет: Эффективность наставничества"/>
 
     <HBox spacing="10">
-        <Button onAction="#onRefreshClick" text="Обновить"/>
+        <Button onAction="#onExportToPdfClick" text="Экспорт в PDF" style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
+        <Button onAction="#onRefreshClick" text="Обновить" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-cursor: hand; -fx-background-radius: 5px; -fx-font-size: 13px;"/>
     </HBox>
 
-    <Label fx:id="summaryLabel" style="-fx-font-size: 14px;"/>
+    <Label fx:id="summaryLabel" style="-fx-font-size: 14px; -fx-text-fill: #555; -fx-font-weight: bold; -fx-padding: 5 0 5 0;"/>
 
-    <TableView fx:id="pairsTable" VBox.vgrow="ALWAYS">
+    <TableView fx:id="pairsTable" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-width: 1px; -fx-border-radius: 5px; -fx-background-radius: 5px;">
         <columns>
-            <TableColumn fx:id="idColumn" visible="false" prefWidth="50" text="ID"/>
+            <TableColumn fx:id="idColumn" prefWidth="50" visible="false" text="ID"/>
             <TableColumn fx:id="mentorColumn" prefWidth="180" text="Наставник"/>
             <TableColumn fx:id="menteeColumn" prefWidth="180" text="Подопечный"/>
             <TableColumn fx:id="statusColumn" prefWidth="120" text="Статус"/>
-            <TableColumn fx:id="meetingsColumn" text="Встреч"/>
-            <TableColumn fx:id="plansColumn" text="Планов"/>
+            <TableColumn fx:id="meetingsColumn" prefWidth="80" text="Встреч"/>
+            <TableColumn fx:id="plansColumn" prefWidth="80" text="Планов"/>
             <TableColumn fx:id="avgRatingColumn" prefWidth="100" text="Ср. рейтинг"/>
         </columns>
     </TableView>

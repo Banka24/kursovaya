@@ -56,8 +56,7 @@ public class ProgressTrackingService {
         stats.put("avgMentorRating", getAverageMentorRating(pairId));
         stats.put("avgMenteeRating", getAverageMenteeRating(pairId));
 
-        long completedPlans = plans.stream().filter(p -> p.getDeadline() != null && p.getDeadline()
-                .isBefore(LocalDate.now())).count();
+        long completedPlans = plans.stream().filter(p -> p.getDeadline() != null && p.getDeadline().isBefore(LocalDate.now())).count();
         stats.put("completedPlans", completedPlans);
 
         return stats;

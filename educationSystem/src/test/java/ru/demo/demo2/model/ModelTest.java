@@ -14,7 +14,7 @@ public class ModelTest {
         m.setSpecialization("Java");
         m.setAvailable(true);
         assertEquals(1, m.getId());
-        assertEquals("Иванов Сергей", m.getFio());
+        assertEquals("Иванов Сергей", m.getFullName());
         assertEquals("ivanov@mail.ru", m.getEmail());
         assertEquals("Java", m.getSpecialization());
         assertTrue(m.getAvailable());
@@ -30,7 +30,7 @@ public class ModelTest {
         m.setGoals("Освоить Java");
         m.setCurrentLevel(2);
         assertEquals(1, m.getId());
-        assertEquals("Новиков Артем", m.getFio());
+        assertEquals("Новиков Артем", m.getFullName());
         assertEquals("novikov@mail.ru", m.getEmail());
         assertEquals("Освоить Java", m.getGoals());
         assertEquals(2, m.getCurrentLevel());
@@ -62,15 +62,13 @@ public class ModelTest {
     @Test void testPairWithMentorMentee() {
         Mentor mentor = new Mentor();
         mentor.setLastName("Иванов");
-        mentor.setFirstName("Сергей");
         Mentee mentee = new Mentee();
         mentee.setLastName("Новиков");
-        mentee.setFirstName("Артем");
         Pair p = new Pair();
         p.setMentor(mentor);
         p.setMentee(mentee);
-        assertEquals("Иванов Сергей", p.getMentorFio());
-        assertEquals("Новиков Артем", p.getMenteeFio());
+        assertEquals("Иванов", p.getMentorFio());
+        assertEquals("Новиков", p.getMenteeFio());
     }
 
     @Test void testDevelopmentPlan() {

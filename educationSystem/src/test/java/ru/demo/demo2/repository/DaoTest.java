@@ -22,7 +22,7 @@ public class DaoTest {
         Mentor m = mentorDao.findAll().get(0);
         Mentor found = mentorDao.findById(m.getId());
         assertNotNull(found);
-        assertEquals(m.getFio(), found.getFio());
+        assertEquals(m.getFullName(), found.getFullName());
     }
 
     @Test void shouldFindAvailableMentors() {
@@ -43,7 +43,7 @@ public class DaoTest {
         Mentee m = menteeDao.findAll().get(0);
         Mentee found = menteeDao.findById(m.getId());
         assertNotNull(found);
-        assertEquals(m.getFio(), found.getFio());
+        assertEquals(m.getFullName(), found.getFullName());
     }
 
     @Test void shouldFindAllDirections() {

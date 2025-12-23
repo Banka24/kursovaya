@@ -5,9 +5,7 @@ import ru.demo.demo2.util.HibernateSession;
 import java.util.List;
 
 public class MentorDao extends BaseDao<Mentor> {
-    public MentorDao() {
-        super(Mentor.class);
-    }
+    public MentorDao() { super(Mentor.class); }
 
     public List<Mentor> findAvailable() {
         try (Session s = HibernateSession.getSessionFactory().openSession()) {
