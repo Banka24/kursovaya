@@ -19,6 +19,9 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.io.font.PdfEncodings;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class ReportController {
     @FXML private TableView<Pair> pairsTable;
@@ -60,12 +63,12 @@ public class ReportController {
         try {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Сохранить отчет в PDF");
-            fileChooser.setInitialFileName("report.pdf");
+            fileChooser.setInitialFileName("report" + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ".pdf");
             fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
             );
             File file = fileChooser.showSaveDialog(pairsTable.getScene().getWindow());
-            
+
             if (file != null) {
                 exportToPdf(file.getAbsolutePath());
                 showInfo("Отчет успешно экспортирован в PDF");
@@ -94,12 +97,12 @@ public class ReportController {
             showError("Ошибка при загрузке данных: " + e.getMessage());
         }
     }
-    
+
     private void exportToPdf(String filePath) throws Exception {
         PdfWriter writer = new PdfWriter(new FileOutputStream(filePath));
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
-        
+
         var fontStream = getClass().getResourceAsStream("/fonts/arial.ttf");
         if (fontStream == null) {
             throw new Exception("Не найден файл шрифта /fonts/arial.ttf");
@@ -109,9 +112,17 @@ public class ReportController {
         document.setFont(font);
 
         Paragraph title = new Paragraph("Отчет: Эффективность наставничества")
-            .setFontSize(18)
-            .setBold();
+                .setFontSize(18)
+                .setBold();
         document.add(title);
+
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        Paragraph dateLine = new Paragraph("Дата формирования: " + currentDate)
+                .setFontSize(12)
+                .setItalic();
+        document.add(dateLine);
+
+        document.add(new Paragraph("\n"));
 
         long active = list.stream().filter(p -> "active".equals(p.getStatus())).count();
         long completed = list.stream().filter(p -> "completed".equals(p.getStatus())).count();
@@ -121,15 +132,15 @@ public class ReportController {
             totalMeetings += progressService.getMeetingsCount(p.getId());
             totalPlans += progressService.getPlansCount(p.getId());
         }
-        
+
         Paragraph summary = new Paragraph(
-            "Всего пар: " + list.size() + ", активных: " + active + ", завершенных: " + completed + 
-            ", встреч: " + totalMeetings + ", планов: " + totalPlans
+                "Всего пар: " + list.size() + ", активных: " + active + ", завершенных: " + completed +
+                        ", встреч: " + totalMeetings + ", планов: " + totalPlans
         ).setFontSize(12);
         document.add(summary);
         document.add(new Paragraph("\n"));
-        
-                Table table = new Table(UnitValue.createPercentArray(new float[]{1, 3, 3, 2, 2, 2, 2}));
+
+        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 3, 3, 2, 2, 2, 2}));
         table.setWidth(UnitValue.createPercentValue(100));
 
         table.addHeaderCell(new Paragraph("ID").setBold());
@@ -148,9 +159,9 @@ public class ReportController {
             table.addCell(new Paragraph(String.valueOf(progressService.getMeetingsCount(pair.getId()))));
             table.addCell(new Paragraph(String.valueOf(progressService.getPlansCount(pair.getId()))));
             Double avg = progressService.getAverageMentorRating(pair.getId());
-            table.addCell(new Paragraph(String.format("%.1f", avg)));
+            table.addCell(new Paragraph(String.format("%.1f", avg != null ? avg : 0.0)));
         }
-        
+
         document.add(table);
         document.close();
     }
